@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import { SEOModel } from "@/models/SEO";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
@@ -45,7 +46,10 @@ const MainLayout = ({ children, SEO }: MainLayoutsProps) => {
         <meta property="twitter:title" content={SEO.title} />
         <meta property="twitter:description" content={SEO.description} />
       </Helmet>
-      <main>{children}</main>
+      <main className="w-screen relative font-satoshi">
+        <Header />
+        {children}
+      </main>
     </>
   );
 };

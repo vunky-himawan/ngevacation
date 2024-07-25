@@ -11,6 +11,9 @@ importers:
       '@unocss/reset':
         specifier: ^0.61.5
         version: 0.61.5
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -23,7 +26,13 @@ importers:
       react-router-dom:
         specifier: ^6.25.1
         version: 6.25.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      swiper:
+        specifier: ^11.1.7
+        version: 11.1.7
     devDependencies:
+      '@iconify-json/iconamoon':
+        specifier: ^1.1.4
+        version: 1.1.4
       '@types/node':
         specifier: ^20.14.11
         version: 20.14.11
@@ -42,6 +51,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^7.15.0
         version: 7.16.1(eslint@8.57.0)(typescript@5.5.3)
+      '@unocss/preset-icons':
+        specifier: ^0.61.5
+        version: 0.61.5
       '@unocss/preset-typography':
         specifier: ^0.61.5
         version: 0.61.5
@@ -411,6 +423,9 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
+
+  '@iconify-json/iconamoon@1.1.4':
+    resolution: {integrity: sha512-ciU8YeoMqWWMRurM7c7PqodEyvd/dGAV5zeLC5+IwqTfcPVI71RUDrhOsE656FjxADcyKh2ZkN64gVqFAZOVng==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -873,6 +888,10 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
+
+  dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
 
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
@@ -1408,6 +1427,10 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
+  swiper@11.1.7:
+    resolution: {integrity: sha512-2EpQvhgKb+DNbi8/i9uRXhddivcMZQxca341t2NZYV1xroCR2p4YtYd3azuqRQ4OEBGcG4nv3aN24O80bMipow==}
+    engines: {node: '>= 4.7.0'}
+
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
@@ -1867,6 +1890,10 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/object-schema@2.0.3': {}
+
+  '@iconify-json/iconamoon@1.1.4':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/types@2.0.0': {}
 
@@ -2397,6 +2424,8 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  dotenv@16.4.5: {}
 
   duplexer@0.1.2: {}
 
@@ -2944,6 +2973,8 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
+
+  swiper@11.1.7: {}
 
   text-table@0.2.0: {}
 

@@ -1,6 +1,7 @@
 // uno.config.ts
 import {
   defineConfig,
+  presetIcons,
   presetTypography,
   presetUno,
   presetWebFonts,
@@ -9,6 +10,7 @@ import {
 export default defineConfig({
   presets: [
     presetUno(),
+    presetIcons(),
     presetTypography(),
     presetWebFonts({
       provider: "fontshare",
