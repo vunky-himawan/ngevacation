@@ -1,5 +1,7 @@
+import FeaturedArticles from "@/components/FeaturedArticles";
+import FeaturedHiddenGems from "@/components/FeaturedHiddenGems";
 import Hero from "@/components/Hero";
-import PublicTravelerEvents from "@/components/PublicTravelerEvents";
+import ListOfEvent from "@/components/ListOfEvents";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 
@@ -7,7 +9,6 @@ const Index = () => {
   const SEO: SEOModel = {
     title: "Testing",
     description: "Testing",
-    thumbnail: "Testing",
     siteName: "Hidden Gems",
     siteUrl: "https://hiddengames.com",
     keywords: ["hidden", "games", "vocation", "traveler"],
@@ -25,7 +26,9 @@ const Index = () => {
           withButton={true}
           buttonLabel="Explore"
         />
-        <PublicTravelerEvents />
+        <ListOfEvent />
+        <FeaturedHiddenGems />
+        <FeaturedArticles />
       </MainLayout>
     </>
   );

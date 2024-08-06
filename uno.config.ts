@@ -15,7 +15,7 @@ export default defineConfig({
     presetWebFonts({
       provider: "fontshare",
       fonts: {
-        sathosi: "Sathosi",
+        sathosi: "Satoshi",
         cabinet: "Cabinet Grotesk",
       },
     }),

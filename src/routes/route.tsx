@@ -1,48 +1,74 @@
+import { useAuth } from "@/context/authContext";
 import Index from "@/pages";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Auth from "@/pages/auth";
+import DashboardTraveler from "@/pages/traveler/dashboard";
+import DashboardAdmin from "@/pages/admin/dashboard";
+import {
+  createBrowserRouter,
+  RouteObject,
+  RouterProvider,
+  RouterProviderProps,
+} from "react-router-dom";
+import { AuthGuard } from "./AuthGuard";
+import { RouteAuthGuard } from "./RouteAuthGuard";
 
 const Router = () => {
-  const PublicRoutes = [
+  const { role } = useAuth();
+
+  const GuestRoutes = [
     {
       path: "/",
       element: <Index />,
     },
+    {
+      path: "/auth",
+      element: <RouteAuthGuard />,
+      children: [
+        {
+          path: "/auth/:provider",
+          element: <Auth />,
+        },
+      ],
+    },
   ];
 
-  // const AdminRoutes = [
-  //   {
-  //     path: "/admin",
-  //     element: <div>Admin</div>,
-  //   },
-  //   {
-  //     path: "/admin/dashboard",
-  //     element: <div>Dashboard</div>,
-  //   },
-  //   {
-  //     path: "/admin/users",
-  //     element: <div>Users</div>,
-  //   },
-  // ];
+  const AdminRoutes = [
+    {
+      path: "/admin",
+      element: <AuthGuard />,
+      children: [
+        {
+          path: "/admin/dashboard",
+          element: <DashboardAdmin />,
+        },
+      ],
+    },
+  ];
 
-  // const TravelerRoutes = [
-  //   {
-  //     path: "/traveler",
-  //     element: <div>Traveler</div>,
-  //   },
-  //   {
-  //     path: "/traveler/dashboard",
-  //     element: <div>Dashboard</div>,
-  //   },
-  // ];
+  const TravelerRoutes = [
+    {
+      path: "/traveler",
+      element: <AuthGuard />,
+      children: [
+        {
+          path: "/traveler/dashboard",
+          element: <DashboardTraveler />,
+        },
+      ],
+    },
+  ];
 
-  // const RoutesCantAccessAfterAuth = [
-  //   {
-  //     path: "/",
-  //     element: <div>Home</div>,
-  //   },
-  // ];
+  const UserRoutes = [
+    ...(role === "admin" ? AdminRoutes : TravelerRoutes),
+    {
+      path: "/auth/change-password",
+      element: <div>Change Password</div>,
+    },
+  ];
 
-  const router = createBrowserRouter([...PublicRoutes]);
+  const routes: RouteObject[] = [...UserRoutes, ...GuestRoutes];
+
+  const router: RouterProviderProps["router"] = createBrowserRouter(routes);
 
   return <RouterProvider router={router} />;
 };

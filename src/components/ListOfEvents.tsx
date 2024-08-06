@@ -1,8 +1,7 @@
-import { SwiperSlide, useSwiper, Swiper } from "swiper/react";
+import { SwiperSlide, Swiper } from "swiper/react";
 import "swiper/css";
-// import { Swiper as SwiperType } from "swiper/types";
 
-const PublicTravelerEvents = () => {
+const ListOfEvent = () => {
   return (
     <>
       <section className="w-full max-w-7xl mx-auto px-4 py-10 flex flex-col gap-5">
@@ -15,9 +14,8 @@ const PublicTravelerEvents = () => {
         <div className="w-full relative">
           <Swiper
             slidesPerView={1}
-            className="w-full h-70vh relative flex justify-center items-center"
+            className="w-full h-70vh relative flex justify-center items-center rounded-3xl"
           >
-            <SwiperButton />
             <SwiperSlide className="border h-full bg-black/30 !flex !justify-center !items-center w-full">
               Event 1
             </SwiperSlide>
@@ -34,27 +32,4 @@ const PublicTravelerEvents = () => {
   );
 };
 
-const SwiperButton = () => {
-  const swiper = useSwiper();
-
-  return (
-    <>
-      <div className="flex justify-between items-center w-full absolute z-2 top-1/2 transform -translate-y-1/2 px-5">
-        <button
-          onClick={() => swiper.slidePrev()}
-          className="bg-black/40 rounded-full p-1"
-        >
-          <div className="i-iconamoon:arrow-left-2-thin w-13 h-13 text-white" />
-        </button>
-        <button
-          onClick={() => swiper.slideNext()}
-          className="bg-black/40 rounded-full p-1"
-        >
-          <div className="i-iconamoon:arrow-right-2-thin w-13 h-13 text-white" />
-        </button>
-      </div>
-    </>
-  );
-};
-
-export default PublicTravelerEvents;
+export default ListOfEvent;
