@@ -41,15 +41,47 @@ const Header = () => {
           >
             <img src={user.profile} alt="" className="h-13 w-13 rounded-full" />
             <div
-              className={`absolute top-18 right-0 bg-white rounded-md p-5 w-10rem flex flex-col gap-5 text-left before:content-[''] before:absolute before:w-7 before:h-7 before:bg-black before:rotate-45 before:right-3 before:-top-2 before:bg-white before:rounded-md ${
+              className={`absolute top-18 right-0 bg-white rounded-md p-5 w-14rem flex flex-col gap-5 text-left before:content-[''] before:absolute before:w-7 before:h-7 before:bg-black before:rotate-45 before:right-3 before:-top-2 before:bg-white before:rounded-md ${
                 isOpenModal ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
               } transition-all duration-300 ease-in-out`}
             >
-              <Link to={`/${role}/dashboard`} className="text-black">
-                Dashboard
+              <Link to={`/traveler/write`} className="text-black">
+                <span className="flex items-center gap-5">
+                  <div className="i-iconamoon:edit-thin w-6 h-6" />
+                  Write
+                </span>
               </Link>
-              <div onClick={handleLogout} className="text-black">
-                Logout
+              <Link to={`/traveler/create/event`} className="text-black">
+                <span className="flex items-center gap-5">
+                  <div className="i-iconamoon:ticket-thin w-6 h-6" />
+                  Create Event
+                </span>
+              </Link>
+              <hr />
+              <Link to={`/traveler/articles`} className="text-black">
+                <span className="flex items-center gap-5">
+                  <div className="i-iconamoon:news-thin w-6 h-6" />
+                  Your Articles
+                </span>
+              </Link>
+              <Link to={`/traveler/events`} className="text-black">
+                <span className="flex items-center gap-5">
+                  <div className="i-iconamoon:star-thin w-6 h-6" />
+                  Your Events
+                </span>
+              </Link>
+              <Link to={`/traveler/plans`} className="text-black">
+                <span className="flex items-center gap-5">
+                  <div className="i-iconamoon:calendar-add-thin w-6 h-6" />
+                  Planning
+                </span>
+              </Link>
+              <hr />
+              <div onClick={handleLogout} className="text-red-5">
+                <span className="flex items-center gap-5">
+                  <div className="i-iconamoon:exit-thin w-6 h-6" />
+                  Logout
+                </span>
               </div>
             </div>
           </button>

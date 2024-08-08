@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import { AuthGuard } from "./AuthGuard";
 import { RouteAuthGuard } from "./RouteAuthGuard";
+import WriteArticle from "@/pages/traveler/WriteArticle";
 
 const Router = () => {
   const { role } = useAuth();
@@ -51,8 +52,24 @@ const Router = () => {
       element: <AuthGuard />,
       children: [
         {
-          path: "/traveler/dashboard",
-          element: <DashboardTraveler />,
+          path: "/traveler/write",
+          element: <WriteArticle />,
+        },
+        {
+          path: "/traveler/plans",
+          element: <div>Plans Page</div>,
+        },
+        {
+          path: "/traveler/events",
+          element: <div>Events Page</div>,
+        },
+        {
+          path: "/traveler/articles",
+          element: <div>Articles Page</div>,
+        },
+        {
+          path: "/traveler/create/event",
+          element: <div>Create Event</div>,
         },
       ],
     },
