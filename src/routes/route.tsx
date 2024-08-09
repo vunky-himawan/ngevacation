@@ -1,7 +1,6 @@
 import { useAuth } from "@/context/authContext";
 import Index from "@/pages";
 import Auth from "@/pages/auth";
-import DashboardTraveler from "@/pages/traveler/dashboard";
 import DashboardAdmin from "@/pages/admin/dashboard";
 import {
   createBrowserRouter,

@@ -54,7 +54,7 @@ const MainLayout = ({ children, SEO, withHeader = true }: MainLayoutsProps) => {
           <meta property="twitter:title" content={SEO.title} />
           <meta property="twitter:description" content={SEO.description} />
         </Helmet>
-        <main className="w-screen relative font-satoshi">
+        <main className="w-screen relative">
           {withHeader && <Header />}
           {children}
         </main>
