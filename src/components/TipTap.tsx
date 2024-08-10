@@ -17,7 +17,15 @@ import axios from "axios";
 import { API_BASE_URL } from "@/data/api";
 import { useAuth } from "@/context/authContext";
 
-const Tiptap = () => {
+const Tiptap = ({
+  setError,
+  content,
+  setContent,
+}: {
+  content: string;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+  setError?: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const { token } = useAuth();
   const editor = useEditor({
     extensions: [
@@ -52,6 +60,10 @@ const Tiptap = () => {
       }),
     ],
     onUpdate: async ({ editor }) => {
+      if (setError) {
+        setError("");
+      }
+
       const tempImage: Array<string> = JSON.parse(
         localStorage.getItem("images") || "[]"
       );
@@ -97,7 +109,10 @@ const Tiptap = () => {
           localStorage.setItem("images", JSON.stringify(tempImage));
         }
       }
+
+      setContent(editor.getHTML());
     },
+    content,
     editorProps: {
       attributes: {
         class:
@@ -115,7 +130,7 @@ const Tiptap = () => {
       <div>
         <Toolbar editor={editor} />
 
-        <EditorContent editor={editor} />
+        <EditorContent required={true} editor={editor} />
       </div>
     </>
   );

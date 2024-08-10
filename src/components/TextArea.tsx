@@ -7,6 +7,7 @@ type TextAreaProps = {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   label?: string;
   style?: string;
+  name: string;
 };
 
 const defaultStyles = {
@@ -18,6 +19,7 @@ const defaultStyles = {
 
 export function Textarea({
   placeholder = "",
+  name,
   value = "",
   onChange,
   label,
@@ -40,6 +42,8 @@ export function Textarea({
         onChange={onChange}
         placeholder={placeholder}
         value={value}
+        name={name}
+        required
       />
     </>
   );
