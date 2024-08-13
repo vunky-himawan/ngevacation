@@ -41,10 +41,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       const accessToken = response.data.data.access_token.token;
+      const refreshToken = response.data.data.refresh_token.token;
 
       if (response.data.data) {
         setToken(accessToken);
         localStorage.setItem("token", accessToken);
+
+        document.cookie = `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict`;
       }
     } catch (error) {
       console.log(error);

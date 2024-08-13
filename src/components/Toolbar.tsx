@@ -210,7 +210,12 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button className="bg-transparent" variant={"ghost"} onClick={addImage}>
+        <Button
+          type="button"
+          className="bg-transparent"
+          variant={"ghost"}
+          onClick={addImage}
+        >
           <span className="icon-[iconamoon--file-image] w-5 h-5"></span>
         </Button>
         <DropdownMenu>

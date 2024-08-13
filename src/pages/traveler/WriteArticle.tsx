@@ -25,11 +25,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import MainLayout from "@/layouts/MainLayout";
+import { SEOModel } from "@/models/SEO";
+import UseUpdateArticle from "@/hooks/article/useUpdateArticle";
 
 type ArticlePayload = {
   title: string;
   content: string;
   cover: File;
+  status: "DRAFT" | "PUBLISHED";
   tags: string[];
 };
 
@@ -39,22 +43,53 @@ type ArticleResponse = {
   message: string;
 };
 
-const WriteArticle = () => {
+const SEO: SEOModel = {
+  title: "Write Article",
+  description:
+    "Write an article about your travel experiences. Share your stories with the world.",
+  siteName: "Hidden Gems",
+  siteUrl: "https://hiddengems.com/traveler/write",
+  keywords: [
+    "hidden gems",
+    "travel articles",
+    "hidden destinations",
+    "travel tips",
+    "travel experiences",
+  ],
+  type: "blog",
+};
+
+const WriteArticle = ({
+  dataTitle,
+  dataCover,
+  dataTags,
+  dataContent,
+  articleId,
+  isEdit = false,
+}: {
+  dataTitle?: string;
+  dataCover?: string;
+  dataTags?: string[];
+  dataContent?: string;
+  articleId?: string;
+  isEdit?: boolean;
+}) => {
   const { user, logout } = useAuth();
   const tagData: string[] | undefined = useGetTags();
   const [tags, setTags] = useState<string[]>([]);
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>(dataContent ?? "");
   const [newTag, setNewTag] = useState<string>("");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>(dataTags ?? []);
   const [listOpen, setListOpen] = useState(false);
-  const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>(dataTitle ?? "");
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [cover, setCover] = useState<string>("");
+  const [cover, setCover] = useState<string>(dataCover ?? "");
   const [coverError, setCoverError] = useState<string>("");
   const [titleError, setTitleError] = useState<string>("");
   const [contentError, setContentError] = useState<string>("");
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">("DRAFT");
 
   const { toast } = useToast();
 
@@ -130,9 +165,12 @@ const WriteArticle = () => {
         content: content,
         cover: file as File,
         tags: selectedTags,
+        status: status,
       };
 
-      const message: ArticleResponse = await UsePostArticle(articlePayload);
+      const message: ArticleResponse = isEdit
+        ? await UseUpdateArticle(articlePayload, articleId as string)
+        : await UsePostArticle(articlePayload);
 
       if (message.status === "success") {
         toast({
@@ -155,7 +193,7 @@ const WriteArticle = () => {
 
       localStorage.removeItem("images");
 
-      navigate("/");
+      navigate(isEdit ? "/traveler/articles" : "/");
     }
   };
 
@@ -167,7 +205,7 @@ const WriteArticle = () => {
 
   return (
     <>
-      <main>
+      <MainLayout SEO={SEO} withHeader={false}>
         <header className="py-5 px-8 w-screen flex justify-between items-center border-b fixed top-0 left-0 bg-white z-50">
           <Link to="/" className="text-3xl font-bold">
             Logo
@@ -327,7 +365,10 @@ const WriteArticle = () => {
             <div className="flex justify-end gap-2">
               <Dialog>
                 <DialogTrigger>
-                  <Button className="w-fit rounded-full bg-transparent shadow-none text-black hover:bg-gray-100 hover:text-black">
+                  <Button
+                    onClick={() => setStatus("DRAFT")}
+                    className="w-fit rounded-full bg-transparent shadow-none text-black hover:bg-gray-100 hover:text-black"
+                  >
                     Save Draft
                   </Button>
                 </DialogTrigger>
@@ -340,13 +381,25 @@ const WriteArticle = () => {
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
-              <Button className="w-fit rounded-full bg-yellow-500">
-                Publish
-              </Button>
+              {isEdit ? (
+                <Button
+                  onClick={() => setStatus("PUBLISHED")}
+                  className="w-fit rounded-full bg-yellow-500"
+                >
+                  Update
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => setStatus("PUBLISHED")}
+                  className="w-fit rounded-full bg-yellow-500"
+                >
+                  Publish
+                </Button>
+              )}
             </div>
           </form>
         </section>
-      </main>
+      </MainLayout>
     </>
   );
 };
