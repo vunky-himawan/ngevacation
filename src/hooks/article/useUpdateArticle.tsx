@@ -15,13 +15,10 @@ type ArticleResponse = {
   message: string;
 };
 
-const UsePostArticle = async ({
-  status,
-  title,
-  content,
-  cover,
-  tags,
-}: ArticlePayload): Promise<ArticleResponse> => {
+const UseUpdateArticle = async (
+  { title, content, cover, tags, status }: ArticlePayload,
+  articleId: string
+): Promise<ArticleResponse> => {
   const token: string | null = localStorage.getItem("token") || null;
 
   if (!token) {
@@ -33,15 +30,16 @@ const UsePostArticle = async ({
   }
 
   const payload: ArticlePayload = {
-    status: status,
     title: title,
+    status: status,
     content: content,
     cover: cover,
     tags: tags,
   };
+
   try {
     await axios
-      .post(`${API_BASE_URL}/article`, payload, {
+      .patch(`${API_BASE_URL}/article/${articleId}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -56,6 +54,7 @@ const UsePostArticle = async ({
       });
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      console.log(error.response?.data.message);
       return {
         title: title,
         status: "failed",
@@ -71,4 +70,4 @@ const UsePostArticle = async ({
   };
 };
 
-export default UsePostArticle;
+export default UseUpdateArticle;

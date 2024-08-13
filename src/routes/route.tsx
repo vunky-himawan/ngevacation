@@ -11,15 +11,32 @@ import {
 import { AuthGuard } from "./AuthGuard";
 import { RouteAuthGuard } from "./RouteAuthGuard";
 import WriteArticle from "@/pages/traveler/WriteArticle";
+import Articles from "@/pages/articles";
+import ArticleDetail from "@/pages/article/article";
+import ArticleSearchResult from "@/pages/article/articleSearchResult";
+import TravelerArticles from "@/pages/traveler/articles";
+import ArticleEdit from "@/pages/traveler/articleEdit";
+import TravelerLibrary from "@/pages/traveler/library";
 
 const Router = () => {
   const { role } = useAuth();
 
-  const GuestRoutes = [
+  const articlePath = [
     {
-      path: "/",
-      element: <Index />,
+      path: "/articles",
+      element: <Articles />,
     },
+    {
+      path: "/articles/result",
+      element: <ArticleSearchResult />,
+    },
+    {
+      path: "/article/:articleId",
+      element: <ArticleDetail />,
+    },
+  ];
+
+  const authPath = [
     {
       path: "/auth",
       element: <RouteAuthGuard />,
@@ -30,6 +47,20 @@ const Router = () => {
         },
       ],
     },
+  ];
+
+  const GuestRoutes = [
+    {
+      path: "/",
+      children: [
+        {
+          path: "/",
+          element: <Index />,
+        },
+      ],
+    },
+    ...authPath,
+    ...articlePath,
   ];
 
   const AdminRoutes = [
@@ -63,8 +94,18 @@ const Router = () => {
           element: <div>Events Page</div>,
         },
         {
-          path: "/traveler/articles",
-          element: <div>Articles Page</div>,
+          path: "/traveler",
+          children: [
+            {
+              path: "/traveler/articles",
+              element: <TravelerArticles />,
+            },
+            { path: "/traveler/library", element: <TravelerLibrary /> },
+            {
+              path: "/traveler/:articleId/edit",
+              element: <ArticleEdit />,
+            },
+          ],
         },
         {
           path: "/traveler/create/event",
