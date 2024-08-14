@@ -2,10 +2,8 @@ import { API_BASE_URL } from "@/data/api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export const useArticleBookmark = (
-  articleId: string,
-  token: string | undefined
-) => {
+export const useArticleBookmark = (articleId: string) => {
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   const bookmarkArticle = async () => {

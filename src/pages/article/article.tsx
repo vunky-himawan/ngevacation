@@ -55,10 +55,7 @@ const ArticleDetail = () => {
     token as string
   );
 
-  const handleBookmark = useArticleBookmark(
-    articleData?.article_id as string,
-    token as string
-  );
+  const handleBookmark = useArticleBookmark(articleData?.article_id as string);
 
   if (!articleData) {
     return <div>Not Found</div>;

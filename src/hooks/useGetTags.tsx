@@ -9,7 +9,7 @@ const useGetTags = (): string[] | undefined => {
   useEffect(() => {
     if (token) {
       axios
-        .get(`${API_BASE_URL}/tag`, {
+        .get(`${API_BASE_URL}/article/tags`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
