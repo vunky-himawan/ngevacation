@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/api";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const useGetBookmarks = () => {
@@ -10,7 +10,7 @@ export const useGetBookmarks = () => {
     onSuccess,
     onError,
   }: {
-    onSuccess?: () => void;
+    onSuccess?: (response: AxiosResponse) => void;
     onError?: () => void;
   }) => {
     if (!token) {
@@ -28,10 +28,8 @@ export const useGetBookmarks = () => {
         }
       );
 
-      console.log(response.data);
-
       if (onSuccess) {
-        onSuccess();
+        onSuccess(response);
       }
     } catch (error) {
       console.error("Failed to get bookmarks:", error);
