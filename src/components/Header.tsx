@@ -5,7 +5,13 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { User } from "@/types/User";
 
-const Header = ({ withSearch = false }: { withSearch: boolean }) => {
+const Header = ({
+  withSearch = false,
+  searchPlaceholder,
+}: {
+  withSearch: boolean;
+  searchPlaceholder: string;
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { token, user, logout } = useAuth();
@@ -44,7 +50,7 @@ const Header = ({ withSearch = false }: { withSearch: boolean }) => {
           </div>
           <nav className="flex gap-14 max-lg:hidden">
             <Link to="/">Events</Link>
-            <Link to="/">Hidden Gems</Link>
+            <Link to="/hidden-gems">Hidden Gems</Link>
             <Link to="/articles">Articles</Link>
             <Link to="/">Community</Link>
           </nav>
@@ -65,6 +71,7 @@ const Header = ({ withSearch = false }: { withSearch: boolean }) => {
                 </div>
 
                 <SearchMenu
+                  placeholder={searchPlaceholder}
                   setIsSearchOpen={setIsSearchOpen}
                   isSearchOpen={isSearchOpen}
                   handleSubmit={handleSubmit}
@@ -144,7 +151,7 @@ const Menu = () => {
               Events
             </span>
           </Link>
-          <Link to="/">
+          <Link to="/hidden-gems">
             <span className="flex items-center gap-5">
               <span className="icon-[iconamoon--flag-thin] w-6 h-6"></span>
               Hidden Gems
@@ -243,8 +250,10 @@ const SearchMenu = ({
   setSearch,
   isSearchOpen,
   setIsSearchOpen,
+  placeholder,
 }: {
   isSearchOpen: boolean;
+  placeholder: string;
   setIsSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
@@ -272,7 +281,7 @@ const SearchMenu = ({
           <Input
             onChange={(e) => setSearch(e.target.value)}
             type="text"
-            placeholder="Search Articles"
+            placeholder={placeholder}
             className="text-white border-0 shadow-none text-2xl focus-visible:ring-0 placeholder:text-white"
           />
         </form>

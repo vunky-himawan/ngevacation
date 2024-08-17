@@ -22,10 +22,9 @@ import { TravelerGuard } from "./TravelerGuard";
 import { AdminGuard } from "./AdminGuard";
 import Error from "@/pages/error";
 import { GuestTravelerGuard } from "./GuestTravelerGuard";
+import HiddenGems from "@/pages/hiddenGems";
 
 const Router = () => {
-  const { role } = useAuth();
-
   const ArticlePath = [
     {
       path: "/articles",
@@ -73,7 +72,7 @@ const Router = () => {
       children: [
         {
           path: "/hidden-gems",
-          element: <div>Hidden Gems Page</div>,
+          element: <HiddenGems />,
         },
       ],
     },

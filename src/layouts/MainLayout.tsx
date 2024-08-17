@@ -7,6 +7,7 @@ type MainLayoutsProps = {
   children: React.ReactNode;
   SEO: SEOModel;
   withHeader?: boolean;
+  searchPlaceholder?: string;
   withSearch?: boolean;
 };
 
@@ -14,6 +15,7 @@ const MainLayout = ({
   children,
   SEO,
   withHeader = true,
+  searchPlaceholder = "Search",
   withSearch = false,
 }: MainLayoutsProps) => {
   const pathLocation = useLocation();
@@ -61,7 +63,12 @@ const MainLayout = ({
           <meta property="twitter:description" content={SEO.description} />
         </Helmet>
         <main className="w-screen relative">
-          {withHeader && <Header withSearch={withSearch} />}
+          {withHeader && (
+            <Header
+              withSearch={withSearch}
+              searchPlaceholder={searchPlaceholder}
+            />
+          )}
           {children}
         </main>
       </HelmetProvider>
