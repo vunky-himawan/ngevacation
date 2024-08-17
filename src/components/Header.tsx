@@ -103,7 +103,7 @@ const Header = ({ withSearch = false }: { withSearch: boolean }) => {
 
               {/* Login Button for Mobile */}
               {!token && (
-                <Link to="/auth/login">
+                <Link to="/auth/login" className="lg:hidden">
                   <button className="border py-2 px-5 rounded-full border-orange-500">
                     Login
                   </button>
@@ -121,7 +121,7 @@ const Header = ({ withSearch = false }: { withSearch: boolean }) => {
               />
             ) : (
               <Link to="/auth/login" className="max-lg:hidden">
-                <button className="border py-2 px-7 rounded-full border-yellow-500">
+                <button className="border py-2 px-7 rounded-full border-orange-500">
                   Login
                 </button>
               </Link>
