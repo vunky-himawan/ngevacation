@@ -34,7 +34,16 @@ export const useGetArticles = ({
         ? `${API_BASE_URL}/article?orderBy=updated_at&order=desc&page=${page}&limit=10&s=${search}&u=${userId}&stat[]=${status}`
         : `${API_BASE_URL}/article?orderBy=updated_at&order=desc&page=${page}&limit=10&s=${search}`;
 
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const headers = token
+      ? {
+          Authorization: `Bearer ${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        }
+      : {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        };
 
     const fetchArticles = async () => {
       setIsLoading(true);

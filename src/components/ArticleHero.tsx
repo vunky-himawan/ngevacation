@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 const ArticleHero = () => {
   return (
     <>
-      <section className="w-screen h-screen max-md:h-[120vh] lg:max-2xl:h-[130vh] flex flex-col justify-center items-center bg-sky-50 pt-20">
+      <section className="w-screen min-h-screen max-md:h-[150vh] lg:max-2xl:h-[130vh] flex flex-col justify-center items-center bg-sky-50 pt-20 max-md:pt-24">
         <div className="h-[40%] p-10 2xl:p-14 flex flex-col gap-5 items-center justify-center max-w-6xl 2xl:max-w-7xl mx-auto">
           <h1 className="text-4xl lg:text-5xl font-bold text-center text-black font-cabinet">
             Explore the World Through Stories and Tips from Fellow Travelers!

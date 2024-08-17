@@ -13,6 +13,8 @@ const useGetUser = (): User | undefined => {
         .get(`${API_BASE_URL}/user`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
           },
         })
         .then((res: AxiosResponse) => {

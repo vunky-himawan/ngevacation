@@ -2,16 +2,24 @@ import FeaturedArticles from "@/components/FeaturedArticles";
 import FeaturedHiddenGems from "@/components/FeaturedHiddenGems";
 import Hero from "@/components/Hero";
 import ListOfEvent from "@/components/ListOfEvents";
+import PostHiddenGems from "@/components/PostHiddenGems";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 
 const Index = () => {
   const SEO: SEOModel = {
-    title: "Testing",
-    description: "Testing",
+    title: "Discover Hidden Gems - Your Ultimate Travel Guide",
+    description:
+      "Explore lesser-known travel destinations and uncover hidden gems around the world. Share your travel stories, plan your next adventure, and connect with fellow travelers.",
     siteName: "Hidden Gems",
-    siteUrl: "https://hiddengames.com",
-    keywords: ["hidden", "games", "vocation", "traveler"],
+    siteUrl: "https://hiddengems.com",
+    keywords: [
+      "hidden gems",
+      "travel guide",
+      "undiscovered destinations",
+      "travel stories",
+      "adventure planning",
+    ],
     type: "website",
   };
 
@@ -28,6 +36,7 @@ const Index = () => {
         />
         <ListOfEvent />
         <FeaturedHiddenGems />
+        <PostHiddenGems />
         <FeaturedArticles />
       </MainLayout>
     </>
