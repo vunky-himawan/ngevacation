@@ -15,6 +15,7 @@ import { useAuth } from "@/context/authContext";
 import { HiddenGemsCategory } from "@/types/HiddenGemsCategory";
 import { useGetCategoriesHiddenGems } from "@/hooks/hidden-gems/useGetCategoriesHiddenGems";
 import { usePostHiddenGems } from "@/hooks/hidden-gems/usePostHiddenGems";
+import { toast } from "./ui/use-toast";
 
 type Day = {
   index: number;
@@ -35,25 +36,6 @@ type ErrorHiddenGems = {
   prize: string;
   operationalDays: string;
   category: string;
-};
-
-type OperationalDayRequest = {
-  day: string;
-  open_time: string;
-  close_time: string;
-};
-
-type CreateHiddenGemsRequest = {
-  title: string;
-  price_start: number;
-  price_end: number;
-  location: string;
-  rating: number;
-  category_id: string;
-  operation_days: OperationalDayRequest[];
-  description: string;
-  photos: File[];
-  user_id: string;
 };
 
 const HiddenGemsForm = () => {
@@ -126,43 +108,52 @@ const HiddenGemsForm = () => {
       error.operationalDays === "" &&
       formRef.current
     ) {
-      const formData = new FormData(formRef.current);
-      const cover: File | null = formData.get("hidden-gems-cover") as File;
-      const photos: File[] | null = formData.getAll(
-        "hidden-gems-photos[]"
-      ) as File[];
-      const files: File[] | null =
-        photos[0].name === "" ? [cover] : [cover, ...photos];
+      const formData: FormData = new FormData(formRef.current);
 
-      const operation_days: OperationalDayRequest[] = operationalDays.map(
-        (operationalDay: OperationalDay) => ({
-          day: operationalDay.day.name.toUpperCase(),
-          open_time: operationalDay.openingTime.toISOString(),
-          close_time: operationalDay.closingTime.toISOString(),
-        })
+      formData.append("title", title);
+      formData.append("price_start", lowestPrice.toString());
+      formData.append("price_end", highestPrice.toString());
+      formData.append("description", description);
+      formData.append("location", address);
+      formData.append("rating", "0");
+      formData.append("user_id", user?.user_id as string);
+      formData.append("category_id", categorySelected.category_id);
+      operationalDays.forEach(
+        (operationalDay: OperationalDay, index: number) => {
+          formData.append(
+            `operation_days[${index}][day]`,
+            operationalDay.day.name.toUpperCase()
+          );
+          formData.append(
+            `operation_days[${index}][open_time]`,
+            operationalDay.openingTime.toISOString()
+          );
+          formData.append(
+            `operation_days[${index}][close_time]`,
+            operationalDay.closingTime.toISOString()
+          );
+        }
       );
-
-      const request: CreateHiddenGemsRequest = {
-        title: title,
-        price_start: lowestPrice,
-        price_end: highestPrice,
-        description: description,
-        location: address,
-        operation_days: operation_days,
-        rating: 0,
-        user_id: user?.user_id as string,
-        photos: files as File[],
-        category_id: categorySelected.category_id,
-      };
 
       postHiddenGem(
         () => {
-          console.log("Success");
+          toast({
+            title: "Success",
+            className: "bg-green-500 text-white",
+            description:
+              "Hidden Gems created successfully, please wait for approval",
+            duration: 2000,
+          });
         },
         () => {
-          console.log("Error");
+          toast({
+            title: "Error",
+            className: "bg-red-500 text-white",
+            description: "An unexpected error occurred",
+            duration: 2000,
+          });
         },
-        request
+        formData
       );
     }
   };
@@ -238,7 +229,7 @@ const HiddenGemsForm = () => {
         <input
           type="file"
           id="cover-photo"
-          name="hidden-gems-cover"
+          name="photos"
           hidden
           onChange={handleAddCover}
           required
@@ -246,7 +237,7 @@ const HiddenGemsForm = () => {
         <input
           type="file"
           id="hidden-gems-photos"
-          name="hidden-gems-photos[]"
+          name="photos"
           hidden
           multiple
           onChange={handleAddPhotos}

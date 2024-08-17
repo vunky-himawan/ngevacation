@@ -18,26 +18,42 @@ import TravelerArticles from "@/pages/traveler/articles";
 import ArticleEdit from "@/pages/traveler/articleEdit";
 import TravelerLibrary from "@/pages/traveler/library";
 import HiddenGemsPost from "@/pages/hidden-gems/hiddenGemsPost";
+import { TravelerGuard } from "./TravelerGuard";
+import { AdminGuard } from "./AdminGuard";
+import Error from "@/pages/error";
+import { GuestTravelerGuard } from "./GuestTravelerGuard";
 
 const Router = () => {
   const { role } = useAuth();
 
-  const articlePath = [
+  const ArticlePath = [
     {
       path: "/articles",
-      element: <Articles />,
-    },
-    {
-      path: "/articles/result",
-      element: <ArticleSearchResult />,
+      element: <GuestTravelerGuard />,
+      children: [
+        {
+          path: "/articles",
+          element: <Articles />,
+        },
+        {
+          path: "/articles/result",
+          element: <ArticleSearchResult />,
+        },
+      ],
     },
     {
       path: "/article/:articleId",
-      element: <ArticleDetail />,
+      element: <GuestTravelerGuard />,
+      children: [
+        {
+          path: "/article/:articleId",
+          element: <ArticleDetail />,
+        },
+      ],
     },
   ];
 
-  const authPath = [
+  const AuthPath = [
     {
       path: "/auth",
       element: <RouteAuthGuard />,
@@ -50,9 +66,33 @@ const Router = () => {
     },
   ];
 
+  const HiddenGemsPath = [
+    {
+      path: "/hidden-gems",
+      element: <GuestTravelerGuard />,
+      children: [
+        {
+          path: "/hidden-gems",
+          element: <div>Hidden Gems Page</div>,
+        },
+      ],
+    },
+    {
+      path: "/hidden-gems/post",
+      element: <TravelerGuard />,
+      children: [
+        {
+          path: "/hidden-gems/post",
+          element: <HiddenGemsPost />,
+        },
+      ],
+    },
+  ];
+
   const GuestPath = [
     {
       path: "/",
+      element: <GuestTravelerGuard />,
       children: [
         {
           path: "/",
@@ -60,17 +100,15 @@ const Router = () => {
         },
       ],
     },
-    ...authPath,
-    ...articlePath,
   ];
 
   const AdminRoutes = [
     {
-      path: "/",
-      element: <AuthGuard />,
+      path: "/admin",
+      element: <AdminGuard />,
       children: [
         {
-          path: "/",
+          path: "/admin",
           element: <DashboardAdmin />,
         },
       ],
@@ -79,18 +117,8 @@ const Router = () => {
 
   const TravelerRoutes = [
     {
-      path: "/",
-      children: [
-        {
-          path: "/",
-          element: <Index />,
-        },
-      ],
-    },
-    ...articlePath,
-    {
       path: "/traveler",
-      element: <AuthGuard />,
+      element: <TravelerGuard />,
       children: [
         {
           path: "/traveler/write",
@@ -119,10 +147,6 @@ const Router = () => {
           ],
         },
         {
-          path: "/traveler/hidden-gems/post",
-          element: <HiddenGemsPost />,
-        },
-        {
           path: "/traveler/create/event",
           element: <div>Create Event</div>,
         },
@@ -131,12 +155,21 @@ const Router = () => {
   ];
 
   const UserRoutes = [
-    ...(role === "admin" ? AdminRoutes : []),
-    ...(role === "traveler" ? TravelerRoutes : []),
-    ...(role === "" ? GuestPath : []),
+    ...AdminRoutes,
+    ...TravelerRoutes,
+    ...GuestPath,
+    ...AuthPath,
+    ...HiddenGemsPath,
+    ...ArticlePath,
   ];
 
-  const routes: RouteObject[] = [...UserRoutes];
+  const routes: RouteObject[] = [
+    ...UserRoutes,
+    {
+      path: "*",
+      element: <Error code={404} message="Page not found" />,
+    },
+  ];
 
   const router: RouterProviderProps["router"] = createBrowserRouter(routes);
 
