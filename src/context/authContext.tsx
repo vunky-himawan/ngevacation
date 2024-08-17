@@ -68,6 +68,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
       });
       setToken(null);
+      setRole("");
       localStorage.removeItem("token");
     } catch (error) {
       console.log(error);

@@ -50,7 +50,7 @@ const Router = () => {
     },
   ];
 
-  const GuestRoutes = [
+  const GuestPath = [
     {
       path: "/",
       children: [
@@ -66,11 +66,11 @@ const Router = () => {
 
   const AdminRoutes = [
     {
-      path: "/admin",
+      path: "/",
       element: <AuthGuard />,
       children: [
         {
-          path: "/admin/dashboard",
+          path: "/",
           element: <DashboardAdmin />,
         },
       ],
@@ -78,6 +78,16 @@ const Router = () => {
   ];
 
   const TravelerRoutes = [
+    {
+      path: "/",
+      children: [
+        {
+          path: "/",
+          element: <Index />,
+        },
+      ],
+    },
+    ...articlePath,
     {
       path: "/traveler",
       element: <AuthGuard />,
@@ -121,14 +131,12 @@ const Router = () => {
   ];
 
   const UserRoutes = [
-    ...(role === "admin" ? AdminRoutes : TravelerRoutes),
-    {
-      path: "/auth/change-password",
-      element: <div>Change Password</div>,
-    },
+    ...(role === "admin" ? AdminRoutes : []),
+    ...(role === "traveler" ? TravelerRoutes : []),
+    ...(role === "" ? GuestPath : []),
   ];
 
-  const routes: RouteObject[] = [...UserRoutes, ...GuestRoutes];
+  const routes: RouteObject[] = [...UserRoutes];
 
   const router: RouterProviderProps["router"] = createBrowserRouter(routes);
 
