@@ -17,6 +17,7 @@ import ArticleSearchResult from "@/pages/article/articleSearchResult";
 import TravelerArticles from "@/pages/traveler/articles";
 import ArticleEdit from "@/pages/traveler/articleEdit";
 import TravelerLibrary from "@/pages/traveler/library";
+import HiddenGemsPost from "@/pages/hidden-gems/hiddenGemsPost";
 
 const Router = () => {
   const { role } = useAuth();
@@ -106,6 +107,10 @@ const Router = () => {
               element: <ArticleEdit />,
             },
           ],
+        },
+        {
+          path: "/traveler/hidden-gems/post",
+          element: <HiddenGemsPost />,
         },
         {
           path: "/traveler/create/event",

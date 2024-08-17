@@ -7,6 +7,7 @@ type TextAreaProps = {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   label?: string;
   style?: string;
+  styleLabel?: string;
   name: string;
 };
 
@@ -24,6 +25,7 @@ export function Textarea({
   onChange,
   label,
   style,
+  styleLabel,
 }: TextAreaProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useResizeTextArea(textAreaRef.current, value);
@@ -31,7 +33,10 @@ export function Textarea({
   return (
     <>
       {label && (
-        <label className={style || defaultStyles.label} htmlFor="textarea-id">
+        <label
+          className={styleLabel || defaultStyles.label}
+          htmlFor="textarea-id"
+        >
           {label}
         </label>
       )}
