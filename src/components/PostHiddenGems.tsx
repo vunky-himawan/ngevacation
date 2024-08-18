@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 const PostHiddenGems = () => {
   return (
     <>
-      <section className="max-md:min-h-screen p-5 w-screen max-w-7xl md:h-[40vh] lg:h-[80vh] mx-auto">
+      <section className="p-5 w-screen max-w-7xl md:h-[40vh] lg:h-[80vh] 2xl:h-[50vh] mx-auto">
         <div className="w-full border h-full rounded-3xl bg-orange-500 text-white grid max-md:grid-cols-1 max-md:grid-rows-2 md:grid-cols-2 md:grid-rows-1 overflow-hidden">
           <div className="relative">
             <img
