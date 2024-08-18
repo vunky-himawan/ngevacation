@@ -21,8 +21,10 @@ import { AdminGuard } from "./AdminGuard";
 import Error from "@/pages/error";
 import { GuestTravelerGuard } from "./GuestTravelerGuard";
 import HiddenGems from "@/pages/hiddenGems";
-import HiddenGemsRequest from "@/pages/admin/hiddenGemsRequest";
-import HiddenGemsDetail from "@/pages/admin/hiddenGemsDetail";
+import HiddenGemsRequest from "@/pages/admin/hidden-gem/hiddenGemsRequest";
+import HiddenGemsDetail from "@/pages/admin/hidden-gem/hiddenGemsDetail";
+import EventRequest from "@/pages/admin/event/eventRequest";
+import UserReportList from "@/pages/admin/report/userReportList";
 
 const Router = () => {
   const ArticlePath = [
@@ -112,7 +114,7 @@ const Router = () => {
         },
         {
           path: "/admin/event/request",
-          element: <div>Event Request</div>,
+          element: <EventRequest />,
         },
         {
           path: "/admin/hidden-gem",
@@ -129,7 +131,7 @@ const Router = () => {
         },
         {
           path: "/admin/user/report",
-          element: <div>User Report</div>,
+          element: <UserReportList />,
         },
       ],
     },
