@@ -2,11 +2,15 @@ import { useAuth } from "@/context/authContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const RouteAuthGuard = () => {
-  const { token } = useAuth();
+  const { token, role } = useAuth();
 
   if (!token) {
     return <Outlet />;
   }
 
-  return <Navigate to="/" />;
+  if (role === "traveler") {
+    return <Navigate to="/" />;
+  }
+
+  return <Navigate to="/admin" />;
 };

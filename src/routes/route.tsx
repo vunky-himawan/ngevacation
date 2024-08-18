@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/authContext";
 import Index from "@/pages";
 import Auth from "@/pages/auth";
 import DashboardAdmin from "@/pages/admin/dashboard";
@@ -8,7 +7,6 @@ import {
   RouterProvider,
   RouterProviderProps,
 } from "react-router-dom";
-import { AuthGuard } from "./AuthGuard";
 import { RouteAuthGuard } from "./RouteAuthGuard";
 import WriteArticle from "@/pages/traveler/WriteArticle";
 import Articles from "@/pages/articles";
@@ -23,6 +21,8 @@ import { AdminGuard } from "./AdminGuard";
 import Error from "@/pages/error";
 import { GuestTravelerGuard } from "./GuestTravelerGuard";
 import HiddenGems from "@/pages/hiddenGems";
+import HiddenGemsRequest from "@/pages/admin/hiddenGemsRequest";
+import HiddenGemsDetail from "@/pages/admin/hiddenGemsDetail";
 
 const Router = () => {
   const ArticlePath = [
@@ -109,6 +109,27 @@ const Router = () => {
         {
           path: "/admin",
           element: <DashboardAdmin />,
+        },
+        {
+          path: "/admin/event/request",
+          element: <div>Event Request</div>,
+        },
+        {
+          path: "/admin/hidden-gem",
+          children: [
+            {
+              path: "/admin/hidden-gem/request",
+              element: <HiddenGemsRequest />,
+            },
+            {
+              path: "/admin/hidden-gem/detail/:hiddenGemId",
+              element: <HiddenGemsDetail />,
+            },
+          ],
+        },
+        {
+          path: "/admin/user/report",
+          element: <div>User Report</div>,
         },
       ],
     },
