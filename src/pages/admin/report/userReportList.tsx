@@ -1,23 +1,23 @@
 import AdminLayout from "@/layouts/AdminLayout";
 
-const DashboardAdmin = () => {
+const UserReportList = () => {
   return (
     <>
       <AdminLayout
-        title="Dashboard"
+        title="User Report List"
         siteName="Hidden Gems"
         siteUrl="https://hiddengems.com"
       >
-        <section className="w-full h-full flex justify-center items-center max-w-7xl mx-auto px-4">
+        <div className="h-full flex flex-col gap-5 items-center justify-center">
           <p>
             This feature is currently under development. We are working hard to
             perfect it so that you can enjoy it soon. Thank you for your
             patience!
           </p>
-        </section>
+        </div>
       </AdminLayout>
     </>
   );
 };
 
-export default DashboardAdmin;
+export default UserReportList;
