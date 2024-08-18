@@ -90,10 +90,9 @@ const LoginForm = ({
   setError: React.Dispatch<React.SetStateAction<string | null>>;
   setSuccessMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
-  const { login, token, role } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,12 +108,6 @@ const LoginForm = ({
     setError(null);
     setSuccessMessage(null);
   }, []);
-
-  useEffect(() => {
-    if (token && role !== "") {
-      navigate("/");
-    }
-  }, [token, role]);
 
   return (
     <>
