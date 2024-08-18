@@ -1,14 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
+import { useMediaQuery } from "usehooks-ts";
 
 const Sidebar = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const location = useLocation();
 
   return (
     <>
       <aside
-        className={`fixed top-0 left-0 z-40 h-screen w-72 bg-white border-r border-gray-200 lg:w-80 xl:w-96 ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-all duration-300 ease-in-out`}
+        className={`fixed top-0 left-0 z-40 h-screen w-72 bg-white border-r border-gray-200 lg:w-60 xl:w-80 ${
+          isMenuOpen && !isDesktop ? "translate-x-0" : "-translate-x-full"
+        } transition-all duration-300 ease-in-out ${
+          isDesktop && "translate-x-0"
+        }`}
       >
         <div className="flex flex-col gap-5 p-5 mt-[4.8rem] h-full">
           <ul className="flex flex-col gap-3">

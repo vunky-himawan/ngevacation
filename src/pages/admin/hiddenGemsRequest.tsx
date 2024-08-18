@@ -36,7 +36,7 @@ const HiddenGemsRequest = () => {
       >
         {isLoading && <Loading />}
         {!isLoading && hiddenGems.length > 0 && (
-          <div className="w-full h-full flex flex-col gap-5 px-4 py-5">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5 px-4 py-5">
             {hiddenGems.map((hiddenGem: HiddenGem) => (
               <Card key={hiddenGem.hidden_gem_id} hiddenGem={hiddenGem} />
             ))}
@@ -52,7 +52,7 @@ const Card = ({ hiddenGem }: { hiddenGem: HiddenGem }) => {
     <>
       <Link
         to={`/admin/hidden-gem/detail/${hiddenGem.hidden_gem_id}`}
-        className="w-full flex flex-col gap-5 rounded-2xl p-5 border"
+        className="w-full flex flex-col gap-5 rounded-2xl p-5 border h-fit"
       >
         <div className="flex justify-between items-center">
           <div className="flex gap-3 items-center">
@@ -69,22 +69,24 @@ const Card = ({ hiddenGem }: { hiddenGem: HiddenGem }) => {
             {hiddenGem.status}
           </p>
         </div>
-        <div className="flex flex-col gap-3">
-          <div>
+        <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
+          <div className="flex-1">
             <p className="font-semibold">Hidden Gems Name</p>
             <p className="text-sm">{hiddenGem.title}</p>
           </div>
-          <div>
+          <div className="flex-1">
             <p className="font-semibold">Requested at</p>
             <p className="text-sm">
               {new Date(hiddenGem.created_at).toDateString()}
             </p>
           </div>
-          <div>
+        </div>
+        <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
+          <div className="flex-1">
             <p className="font-semibold">Location</p>
             <p className="text-sm">{hiddenGem.location}</p>
           </div>
-          <div>
+          <div className="flex-1">
             <p className="font-semibold">Description</p>
             <p className="text-sm">{hiddenGem.description.substring(0, 100)}</p>
           </div>

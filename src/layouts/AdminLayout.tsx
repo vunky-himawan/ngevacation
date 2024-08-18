@@ -40,7 +40,7 @@ const AdminLayout = ({
         <main className="w-screen relative">
           <Header setIsMenuOpen={setIsMenuOpen} isMenuOpen={isMenuOpen} />
           <Sidebar isMenuOpen={isMenuOpen} />
-          <section className="w-full h-screen max-h-fit pt-[4.7rem]">
+          <section className="w-full h-screen max-h-fit pt-[4.7rem] lg:pl-[20.5rem] lg:py-28 max-w-[1920px] mx-auto">
             {children}
           </section>
         </main>
