@@ -1,4 +1,5 @@
 import { User } from "../User";
+import { EventCategory } from "./EventCategory";
 import { OperationDay } from "./EventOperationalDay";
 
 export type Event = {
@@ -8,7 +9,7 @@ export type Event = {
   price_end: number;
   location: string;
   rating: number;
-  category: any;
+  category: EventCategory;
   status: string;
   description: string;
   photos: string[];
