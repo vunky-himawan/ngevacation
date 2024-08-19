@@ -19,4 +19,4 @@ export type HiddenGem = {
   comment: HiddenGemsComment[];
   created_at: Date;
   updated_at: Date;
-}
+};

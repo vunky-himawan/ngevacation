@@ -26,6 +26,7 @@ import HiddenGemsDetail from "@/pages/admin/hidden-gem/hiddenGemsDetail";
 import EventRequest from "@/pages/admin/event/eventRequest";
 import UserReportList from "@/pages/admin/report/userReportList";
 import EventPost from "@/pages/event/EventPost";
+import HiddenGem from "@/pages/hidden-gems/HiddenGem";
 
 const Router = () => {
   const ArticlePath = [
@@ -78,6 +79,10 @@ const Router = () => {
           element: <HiddenGems />,
         },
       ],
+    },
+    {
+      path: "/hidden-gem/:hiddenGemId",
+      element: <HiddenGem />,
     },
     {
       path: "/hidden-gems/post",

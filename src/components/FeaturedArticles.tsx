@@ -29,10 +29,6 @@ const FeaturedArticles = () => {
     );
   }, []);
 
-  useEffect(() => {
-    console.log(articles);
-  }, [articles]);
-
   return (
     <>
       <section className="w-full max-w-7xl mx-auto py-10 flex flex-col gap-5">
@@ -47,6 +43,7 @@ const FeaturedArticles = () => {
           <div className="w-full relative h-fit 2xl:h-[50vh] flex flex-col gap-5">
             {articles.map((article: Article) => (
               <CardOFArticles
+                key={article.article_id}
                 article_id={article.article_id}
                 title={article.title}
                 author={article.user.username}
