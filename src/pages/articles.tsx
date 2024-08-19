@@ -1,5 +1,5 @@
-import ArticleHero from "@/components/ArticleHero";
-import ListOfArticle from "@/components/ListOfArticle";
+import ArticleHero from "@/components/article/ArticleHero";
+import ListOfArticle from "@/components/article/ListOfArticle";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 

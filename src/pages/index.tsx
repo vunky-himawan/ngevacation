@@ -1,11 +1,11 @@
-import PostEvent from "@/components/PostEvent";
-import FeaturedArticles from "@/components/FeaturedArticles";
-import FeaturedHiddenGems from "@/components/FeaturedHiddenGems";
+import PostEvent from "@/components/event/PostEvent";
+import FeaturedArticles from "@/components/article/FeaturedArticles";
+import FeaturedHiddenGems from "@/components/hidden-gems/FeaturedHiddenGems";
 import Hero from "@/components/Hero";
-import PostHiddenGems from "@/components/PostHiddenGems";
+import PostHiddenGems from "@/components/hidden-gems/PostHiddenGems";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
-import ListOfEvent from "@/components/ListOfEvents";
+import FeaturedEvents from "@/components/event/FeaturedEvents";
 
 const Index = () => {
   const SEO: SEOModel = {
@@ -35,7 +35,7 @@ const Index = () => {
           withButton={true}
           buttonLabel="Explore"
         />
-        <ListOfEvent />
+        <FeaturedEvents />
         <PostEvent />
         <FeaturedHiddenGems />
         <PostHiddenGems />

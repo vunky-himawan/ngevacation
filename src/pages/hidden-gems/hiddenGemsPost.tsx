@@ -1,4 +1,4 @@
-import HiddenGemsForm from "@/components/HiddenGemsForm";
+import HiddenGemsForm from "@/components/hidden-gems/HiddenGemsForm";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 

@@ -3,12 +3,12 @@ import "swiper/css";
 import { useEffect, useState } from "react";
 import { useGetEvents } from "@/hooks/event/useGetEvents";
 import { Event } from "@/types/Event/Event";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 import { Link } from "react-router-dom";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import { Autoplay } from "swiper/modules";
 
-const ListOfEvent = () => {
+const FeaturedEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const getEvents = useGetEvents();
@@ -82,4 +82,4 @@ const ListOfEvent = () => {
   );
 };
 
-export default ListOfEvent;
+export default FeaturedEvents;

@@ -1,21 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./ui/button";
-import { Textarea } from "./TextArea";
-import { Textarea as TextArea } from "./ui/textarea";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import { Button } from "../ui/button";
+import { Textarea } from "../TextArea";
+import { Textarea as TextArea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 import useValidationHiddenGems from "@/hooks/hidden-gems/useValidationHiddenGems";
 import { useAuth } from "@/context/authContext";
 import { HiddenGemsCategory } from "@/types/HiddenGemsCategory";
 import { useGetCategoriesHiddenGems } from "@/hooks/hidden-gems/useGetCategoriesHiddenGems";
 import { usePostHiddenGems } from "@/hooks/hidden-gems/usePostHiddenGems";
-import { toast } from "./ui/use-toast";
+import { toast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 
 type Day = {
