@@ -27,6 +27,7 @@ import EventRequest from "@/pages/admin/event/eventRequest";
 import UserReportList from "@/pages/admin/report/userReportList";
 import EventPost from "@/pages/event/EventPost";
 import HiddenGem from "@/pages/hidden-gems/HiddenGem";
+import Events from "@/pages/events";
 
 const Router = () => {
   const ArticlePath = [
@@ -98,12 +99,12 @@ const Router = () => {
 
   const EventPath = [
     {
-      path: "/event",
+      path: "/events",
       element: <GuestTravelerGuard />,
       children: [
         {
-          path: "/event",
-          element: <div>Event Page</div>,
+          path: "/events",
+          element: <Events />,
         },
       ],
     },

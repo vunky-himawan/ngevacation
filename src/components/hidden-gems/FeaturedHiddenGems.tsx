@@ -1,7 +1,7 @@
 import { useGetHiddenGems } from "@/hooks/hidden-gems/useGetHiddenGems";
 import { HiddenGem } from "@/types/HiddenGem/HiddenGems";
 import { useEffect, useState } from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 const FeaturedHiddenGems = () => {
   const [hiddenGems, setHiddenGems] = useState<HiddenGem[]>([]);

@@ -49,7 +49,7 @@ const Header = ({
             <Link to={`/`}>Logo</Link>
           </div>
           <nav className="flex gap-14 max-lg:hidden">
-            <Link to="/">Events</Link>
+            <Link to="/events">Events</Link>
             <Link to="/hidden-gems">Hidden Gems</Link>
             <Link to="/articles">Articles</Link>
             <Link to="/">Community</Link>
@@ -145,7 +145,7 @@ const Menu = () => {
     <>
       <nav className="flex flex-col justify-between h-fit">
         <div className="flex flex-col gap-10">
-          <Link to="/">
+          <Link to="/events">
             <span className="flex items-center gap-5">
               <div className="icon-[iconamoon--star-thin] w-6 h-6" />
               Events

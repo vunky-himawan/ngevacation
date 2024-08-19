@@ -1,6 +1,6 @@
 import { useGetArticles } from "@/hooks/article/useGetArticles";
 import { Article } from "@/types/Article";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
