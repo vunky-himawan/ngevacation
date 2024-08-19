@@ -25,6 +25,7 @@ import HiddenGemsRequest from "@/pages/admin/hidden-gem/hiddenGemsRequest";
 import HiddenGemsDetail from "@/pages/admin/hidden-gem/hiddenGemsDetail";
 import EventRequest from "@/pages/admin/event/eventRequest";
 import UserReportList from "@/pages/admin/report/userReportList";
+import EventPost from "@/pages/event/EventPost";
 
 const Router = () => {
   const ArticlePath = [
@@ -85,6 +86,29 @@ const Router = () => {
         {
           path: "/hidden-gems/post",
           element: <HiddenGemsPost />,
+        },
+      ],
+    },
+  ];
+
+  const EventPath = [
+    {
+      path: "/event",
+      element: <GuestTravelerGuard />,
+      children: [
+        {
+          path: "/event",
+          element: <div>Event Page</div>,
+        },
+      ],
+    },
+    {
+      path: "/event/post",
+      element: <TravelerGuard />,
+      children: [
+        {
+          path: "/event/post",
+          element: <EventPost />,
         },
       ],
     },
@@ -183,6 +207,7 @@ const Router = () => {
     ...AuthPath,
     ...HiddenGemsPath,
     ...ArticlePath,
+    ...EventPath,
   ];
 
   const routes: RouteObject[] = [
