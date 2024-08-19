@@ -26,7 +26,10 @@ const ListOfHiddenGems = () => {
 
   return (
     <>
-      <section id="hidden-gems-list" className="px-5 py-10 w-full max-w-7xl mx-auto">
+      <section
+        id="hidden-gems-list"
+        className="px-5 py-10 w-full max-w-7xl mx-auto"
+      >
         <Filter setQuery={setQuery} />
 
         <div className="w-full max-w-7xl mx-auto pt-28 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -47,7 +50,7 @@ const HiddenGemCard = ({ hiddenGem }: { hiddenGem: HiddenGem }) => {
   return (
     <>
       <Link
-        to={`/article/${hiddenGem.hidden_gem_id}`}
+        to={`/hidden-gem/${hiddenGem.hidden_gem_id}`}
         className="flex flex-col gap-5 rounded-3xl p-2 mt-5"
       >
         <div>

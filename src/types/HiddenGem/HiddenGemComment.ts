@@ -10,4 +10,4 @@ export type HiddenGemsComment = {
   replies?: HiddenGemsCommentReplies[];
   created_at: Date;
   updated_at: Date;
-}
+};

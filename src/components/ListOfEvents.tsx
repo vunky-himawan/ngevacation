@@ -48,7 +48,10 @@ const ListOfEvent = () => {
               className="w-full h-[50vh] relative flex justify-center items-center rounded-3xl"
             >
               {events.map((event: Event) => (
-                <SwiperSlide className="border h-full bg-black/30 !flex !justify-center !items-center w-full rounded-3xl overflow-hidden">
+                <SwiperSlide
+                  key={event.event_id}
+                  className="border h-full bg-black/30 !flex !justify-center !items-center w-full rounded-3xl overflow-hidden"
+                >
                   <Link
                     to={`/event/${event.event_id}`}
                     key={event.event_id}

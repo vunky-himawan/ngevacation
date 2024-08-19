@@ -34,6 +34,7 @@ const FeaturedHiddenGems = () => {
           <div className="w-full grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {hiddenGems.map((hiddenGem: HiddenGem) => (
               <CardOfHiddenGems
+                key={hiddenGem.hidden_gem_id}
                 image={hiddenGem.photos[0]}
                 title={hiddenGem.title}
                 rating={hiddenGem.rating}
@@ -79,7 +80,7 @@ const CardOfHiddenGems = ({
                   className="icon-[iconamoon--star-fill] w-5 h-5 bg-yellow-500"
                 />
               ))}
-              {Math.floor(rating)}
+              {rating.toFixed(1)}
             </div>
           </div>
           <div>

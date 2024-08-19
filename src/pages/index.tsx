@@ -2,10 +2,10 @@ import PostEvent from "@/components/PostEvent";
 import FeaturedArticles from "@/components/FeaturedArticles";
 import FeaturedHiddenGems from "@/components/FeaturedHiddenGems";
 import Hero from "@/components/Hero";
-import ListOfEvent from "@/components/ListOfEvents";
 import PostHiddenGems from "@/components/PostHiddenGems";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
+import ListOfEvent from "@/components/ListOfEvents";
 
 const Index = () => {
   const SEO: SEOModel = {

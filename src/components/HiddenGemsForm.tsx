@@ -16,6 +16,7 @@ import { HiddenGemsCategory } from "@/types/HiddenGemsCategory";
 import { useGetCategoriesHiddenGems } from "@/hooks/hidden-gems/useGetCategoriesHiddenGems";
 import { usePostHiddenGems } from "@/hooks/hidden-gems/usePostHiddenGems";
 import { toast } from "./ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 type Day = {
   index: number;
@@ -59,6 +60,7 @@ const HiddenGemsForm = () => {
   const validation = useValidationHiddenGems();
   const getCategories = useGetCategoriesHiddenGems();
   const postHiddenGem = usePostHiddenGems();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getCategories(
@@ -144,6 +146,7 @@ const HiddenGemsForm = () => {
               "Hidden Gems created successfully, please wait for approval",
             duration: 2000,
           });
+          navigate("/hidden-gems");
         },
         () => {
           toast({
