@@ -4,13 +4,13 @@ import { Navigate, Outlet } from "react-router-dom";
 export const RouteAuthGuard = () => {
   const { token, role } = useAuth();
 
-  if (!token) {
-    return <Outlet />;
+  if (token && role === "admin") {
+    return <Navigate to="/admin" />;
   }
 
-  if (role === "traveler") {
+  if (token && role === "traveler") {
     return <Navigate to="/" />;
   }
 
-  return <Navigate to="/admin" />;
+  return <Outlet />;
 };

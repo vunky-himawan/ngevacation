@@ -1,3 +1,4 @@
+import PostEvent from "@/components/PostEvent";
 import FeaturedArticles from "@/components/FeaturedArticles";
 import FeaturedHiddenGems from "@/components/FeaturedHiddenGems";
 import Hero from "@/components/Hero";
@@ -35,6 +36,7 @@ const Index = () => {
           buttonLabel="Explore"
         />
         <ListOfEvent />
+        <PostEvent />
         <FeaturedHiddenGems />
         <PostHiddenGems />
         <FeaturedArticles />

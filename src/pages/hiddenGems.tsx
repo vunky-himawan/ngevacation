@@ -1,9 +1,7 @@
 import HiddenGemsHero from "@/components/hidden-gems/HiddenGemsHero";
 import ListOfHiddenGems from "@/components/hidden-gems/ListOfHiddenGems";
-import { useGetHiddenGems } from "@/hooks/hidden-gems/useGetHiddenGems";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
-import { useEffect } from "react";
 
 const SEO: SEOModel = {
   title: "Hidden Gems",
