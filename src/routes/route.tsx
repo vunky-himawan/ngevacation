@@ -28,6 +28,10 @@ import UserReportList from "@/pages/admin/report/userReportList";
 import EventPost from "@/pages/event/EventPost";
 import HiddenGem from "@/pages/hidden-gems/HiddenGem";
 import Events from "@/pages/events";
+import PlannerPost from "@/pages/planner/PlannerPost";
+import Planner from "@/pages/traveler/planner/Planner";
+import PlannerDetail from "@/pages/traveler/planner/PlannerDetail";
+import HiddenGemSearchResult from "@/pages/hidden-gems/HiddenGemSearchResult";
 
 const Router = () => {
   const ArticlePath = [
@@ -79,6 +83,10 @@ const Router = () => {
           path: "/hidden-gems",
           element: <HiddenGems />,
         },
+        {
+          path: "/hidden-gems/result",
+          element: <HiddenGemSearchResult />,
+        },
       ],
     },
     {
@@ -92,6 +100,19 @@ const Router = () => {
         {
           path: "/hidden-gems/post",
           element: <HiddenGemsPost />,
+        },
+      ],
+    },
+  ];
+
+  const PlannerPath = [
+    {
+      path: "/planner",
+      element: <TravelerGuard />,
+      children: [
+        {
+          path: "/planner/post",
+          element: <PlannerPost />,
         },
       ],
     },
@@ -178,7 +199,7 @@ const Router = () => {
         },
         {
           path: "/traveler/plans",
-          element: <div>Plans Page</div>,
+          element: <Planner />,
         },
         {
           path: "/traveler/events",
@@ -195,6 +216,10 @@ const Router = () => {
             {
               path: "/traveler/:articleId/edit",
               element: <ArticleEdit />,
+            },
+            {
+              path: "/traveler/planner/:planId",
+              element: <PlannerDetail />,
             },
           ],
         },
@@ -214,6 +239,7 @@ const Router = () => {
     ...HiddenGemsPath,
     ...ArticlePath,
     ...EventPath,
+    ...PlannerPath,
   ];
 
   const routes: RouteObject[] = [

@@ -26,6 +26,7 @@ const HiddenGems = () => {
         SEO={SEO}
         withSearch={true}
         searchPlaceholder="Search Hidden Gems"
+        navigationLink="/hidden-gems/result"
       >
         <HiddenGemsHero />
         <ListOfHiddenGems />

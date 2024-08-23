@@ -17,6 +17,7 @@ export const useGetHiddenGems = () => {
       }`;
 
       const response = await axios.get(URL, { headers });
+
       const hiddenGems = response.data.data;
       onSuccess(hiddenGems);
     } catch (error) {

@@ -10,25 +10,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useValidationHiddenGems from "@/hooks/hidden-gems/useValidationHiddenGems";
 import { useAuth } from "@/context/authContext";
-import { HiddenGemsCategory } from "@/types/HiddenGemsCategory";
-import { useGetCategoriesHiddenGems } from "@/hooks/hidden-gems/useGetCategoriesHiddenGems";
-import { usePostHiddenGems } from "@/hooks/hidden-gems/usePostHiddenGems";
 import { toast } from "@/components/ui/use-toast";
+import { useGetEventCategory } from "@/hooks/event/useGetEventCategory";
+import { EventCategory } from "@/types/Event/EventCategory";
+import { usePostEvent } from "@/hooks/event/usePostEvent";
+import useValidationEvent from "@/hooks/event/useValidationEvent";
+import { EventOperationalDay } from "@/types/Event/EventOperationalDay";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
-type Day = {
-  index: number;
-  name: string;
-};
-
-type OperationalDay = {
-  day: Day;
-  openingTime: Date;
-  closingTime: Date;
-};
-
-type ErrorHiddenGems = {
+type ErrorEvent = {
   title: string;
   cover: string;
   description: string;
@@ -44,26 +36,30 @@ const EventForm = () => {
   const [cover, setCover] = useState<string>("");
   const [photos, setPhotos] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("");
-  const [operationalDays, setOperationalDays] = useState<OperationalDay[]>([]);
+  const [operationalDays, setOperationalDays] = useState<EventOperationalDay[]>(
+    []
+  );
   const [description, setDescription] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [lowestPrice, setLowestPrice] = useState<number>(0);
   const [highestPrice, setHighestPrice] = useState<number>(0);
-  const [categories, setCategories] = useState<HiddenGemsCategory[]>([]);
+  const [categories, setCategories] = useState<EventCategory[]>([]);
   const [categorySelected, setCategorySelected] = useState<{
     category_id: string;
     category_name: string;
   }>({} as { category_id: string; category_name: string });
   const formRef = useRef<HTMLFormElement>(null);
-  const [error, setError] = useState<ErrorHiddenGems>({} as ErrorHiddenGems);
-  const validation = useValidationHiddenGems();
-  const getCategories = useGetCategoriesHiddenGems();
-  const postHiddenGem = usePostHiddenGems();
+  const [error, setError] = useState<ErrorEvent>({} as ErrorEvent);
+  const [isOnPost, setIsOnPost] = useState<boolean>(false);
+  const validation = useValidationEvent();
+  const getCategories = useGetEventCategory();
+  const postEvent = usePostEvent();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getCategories(
-      (data: HiddenGemsCategory[]) => {
-        setCategories(data);
+      (data: EventCategory[]) => {
+        setCategories(data as EventCategory[]);
       },
       () => {
         console.log("Error");
@@ -119,23 +115,25 @@ const EventForm = () => {
       formData.append("user_id", user?.user_id as string);
       formData.append("category_id", categorySelected.category_id);
       operationalDays.forEach(
-        (operationalDay: OperationalDay, index: number) => {
+        (operationalDay: EventOperationalDay, index: number) => {
           formData.append(
-            `operation_days[${index}][day]`,
-            operationalDay.day.name.toUpperCase()
+            `operation_days[${index}][date]`,
+            operationalDay.date
           );
           formData.append(
             `operation_days[${index}][open_time]`,
-            operationalDay.openingTime.toISOString()
+            operationalDay.open_time
           );
           formData.append(
             `operation_days[${index}][close_time]`,
-            operationalDay.closingTime.toISOString()
+            operationalDay.close_time
           );
         }
       );
 
-      postHiddenGem(
+      setIsOnPost(true);
+
+      postEvent(
         () => {
           toast({
             title: "Success",
@@ -144,8 +142,10 @@ const EventForm = () => {
               "Hidden Gems created successfully, please wait for approval",
             duration: 2000,
           });
+          navigate("/events");
         },
         () => {
+          setIsOnPost(false);
           toast({
             title: "Error",
             className: "bg-red-500 text-white",
@@ -236,7 +236,7 @@ const EventForm = () => {
         />
         <input
           type="file"
-          id="hidden-gems-photos"
+          id="event-photos"
           name="photos"
           hidden
           multiple
@@ -293,10 +293,13 @@ const EventForm = () => {
           <div>
             {slide === 2 ? (
               <Button
-                variant={"ghost"}
-                className="text-orange-500"
+                className="bg-orange-500 rounded-full hover:bg-orange-400"
                 onClick={handleNext}
+                disabled={isOnPost}
               >
+                {isOnPost && (
+                  <span className="icon-[svg-spinners--tadpole] mr-5"></span>
+                )}{" "}
                 Submit
               </Button>
             ) : (
@@ -325,7 +328,7 @@ const ImageForm = ({
   photos: string[];
   cover: string;
   setPhotos: React.Dispatch<React.SetStateAction<string[]>>;
-  error: ErrorHiddenGems;
+  error: ErrorEvent;
 }) => {
   const handleDeletePhoto = (index: number) => {
     setPhotos((prevPhotos) => prevPhotos.filter((_, i) => i !== index));
@@ -335,7 +338,7 @@ const ImageForm = ({
     <>
       <div className="flex flex-col gap-10 overflow-hidden">
         <div className="flex flex-col w-full gap-3">
-          <h1 className="text-4xl font-semibold">Cover of Hidden Gems</h1>
+          <h1 className="text-4xl font-semibold">Cover of Event</h1>
           <label
             htmlFor="cover-photo"
             className={`font-cabinet w-full border border-dashed rounded-3xl min-h-[12rem] flex justify-center items-center ${
@@ -363,10 +366,7 @@ const ImageForm = ({
               type="button"
               className="bg-orange-500 rounded-full hover:bg-orange-400 text-white w-fit"
             >
-              <label
-                htmlFor="hidden-gems-photos"
-                className="font-cabinet w-fit"
-              >
+              <label htmlFor="event-photos" className="font-cabinet w-fit">
                 Upload Photos
               </label>
             </Button>
@@ -416,7 +416,7 @@ const DetailsForm = ({
   setHighestPrice,
   error,
 }: {
-  categories: HiddenGemsCategory[];
+  categories: EventCategory[];
   categorySelected: {
     category_id: string;
     category_name: string;
@@ -437,7 +437,7 @@ const DetailsForm = ({
   setLowestPrice: React.Dispatch<React.SetStateAction<number>>;
   highestPrice: number;
   setHighestPrice: React.Dispatch<React.SetStateAction<number>>;
-  error: ErrorHiddenGems;
+  error: ErrorEvent;
 }) => {
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTitle(e.target.value);
@@ -447,11 +447,11 @@ const DetailsForm = ({
     <>
       <div className="flex flex-col gap-5">
         <div>
-          <Label className="text-md">Hidden Gems Name</Label>
+          <Label className="text-md">Event Name</Label>
           {error.title && <p className="text-red-500 text-sm">{error.title}</p>}
           <Textarea
             name="title"
-            placeholder="Hidden Gems Name"
+            placeholder="Event Name"
             value={title}
             onChange={handleTitleChange}
             style="w-full h-[2.8rem] rounded-md resize-none focus:outline-none overflow-hidden p-2.5 text-gray border"
@@ -459,7 +459,7 @@ const DetailsForm = ({
         </div>
         <div className="grid grid-cols-2 gap-5">
           <div>
-            <Label className="text-md">Lowest Price</Label>
+            <Label className="text-md">Lowest Ticket Price</Label>
             <Input
               type="text"
               inputMode="numeric"
@@ -469,7 +469,7 @@ const DetailsForm = ({
             ></Input>
           </div>
           <div>
-            <Label className="text-md">Highest Price</Label>
+            <Label className="text-md">Highest Ticket Price</Label>
             <Input
               type="text"
               inputMode="numeric"
@@ -486,7 +486,7 @@ const DetailsForm = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div>
-                <Label className="text-md">Category</Label>
+                <Label className="text-md">Category Event</Label>
                 {error.category && (
                   <p className="text-red-500 text-sm">{error.category}</p>
                 )}
@@ -540,28 +540,24 @@ const OperationalForm = ({
   operationalDays,
   setOperationalDays,
 }: {
-  setError: React.Dispatch<React.SetStateAction<ErrorHiddenGems>>;
-  error: ErrorHiddenGems;
-  operationalDays: OperationalDay[];
-  setOperationalDays: React.Dispatch<React.SetStateAction<OperationalDay[]>>;
+  setError: React.Dispatch<React.SetStateAction<ErrorEvent>>;
+  error: ErrorEvent;
+  operationalDays: EventOperationalDay[];
+  setOperationalDays: React.Dispatch<
+    React.SetStateAction<EventOperationalDay[]>
+  >;
 }) => {
-  const [days, setDays] = useState<Day[]>([
-    { index: 0, name: "Sunday" },
-    { index: 1, name: "Monday" },
-    { index: 2, name: "Tuesday" },
-    { index: 3, name: "Wednesday" },
-    { index: 4, name: "Thursday" },
-    { index: 5, name: "Friday" },
-    { index: 6, name: "Saturday" },
-  ]);
-  const [selectedDay, setSelectedDay] = useState<Day | null>(null);
-  const [openingTime, setOpeningTime] = useState<Date | null>(null);
-  const [closingTime, setClosingTime] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [openingTime, setOpeningTime] = useState<Date>(new Date());
+  const [closingTime, setClosingTime] = useState<Date>(new Date());
   const [disabledAddDay, setDisabledAddDay] = useState<boolean>(true);
-  const validation = useValidationHiddenGems();
+  const validation = useValidationEvent();
 
-  const handleSelectDay = (day: Day) => {
-    setSelectedDay(day);
+  const handleSelectDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target: HTMLInputElement = e.target as HTMLInputElement;
+    const date = new Date(target.value);
+    console.log(date.toISOString().split("T")[0]);
+    setSelectedDate(date);
   };
 
   const handleAddOpeningTime = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -585,27 +581,28 @@ const OperationalForm = ({
   };
 
   useEffect(() => {
-    if (selectedDay && openingTime && closingTime) {
+    if (selectedDate && openingTime && closingTime) {
       setDisabledAddDay(false);
     } else {
       setDisabledAddDay(true);
     }
-  }, [selectedDay, openingTime, closingTime]);
+  }, [selectedDate, openingTime, closingTime]);
 
   const handleAddOperationalDay = () => {
-    const operationalDay: OperationalDay = {
-      day: selectedDay as Day,
-      openingTime: openingTime as Date,
-      closingTime: closingTime as Date,
+    const operationalDay: EventOperationalDay = {
+      date: selectedDate.toISOString(),
+      open_time: openingTime.toISOString(),
+      close_time: closingTime.toISOString(),
     };
 
     const validate = validation.validateOperationalDay(operationalDay);
     setError((prevError) => ({ ...prevError, operationalDays: validate }));
 
-    if (selectedDay && openingTime && closingTime && validate === "") {
+    if (selectedDate && openingTime && closingTime && validate === "") {
       setOperationalDays((prev) => [...prev, operationalDay]);
-      setDays((prev) => prev.filter((day) => day.name !== selectedDay.name));
-      setSelectedDay(null);
+      setSelectedDate(new Date());
+      setOpeningTime(new Date());
+      setClosingTime(new Date());
       setDisabledAddDay(true);
     }
   };
@@ -613,73 +610,60 @@ const OperationalForm = ({
   return (
     <>
       <div className="overflow-hidden">
-        <h1 className="text-4xl font-semibold">Operational Days</h1>
+        <h1 className="text-4xl font-semibold">Event Dates</h1>
         {error.operationalDays && (
           <p className="text-red-500 text-sm">{error.operationalDays}</p>
         )}
 
         <div className="flex flex-col gap-3">
-          {days.length > 0 && (
-            <>
-              <div className="flex flex-col gap-3 mt-3">
-                <div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button className="w-full bg-white border-orange-500 border text-orange-500 hover:bg-orange-400 hover:text-white">
-                        {selectedDay ? selectedDay.name : "Select Day"}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {days.map((day, index) => (
-                        <DropdownMenuItem
-                          onSelect={() => handleSelectDay(day)}
-                          key={index}
-                        >
-                          {day.name}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-md">Opening Time</Label>
-                    <Input
-                      type="time"
-                      placeholder="Time"
-                      onChange={handleAddOpeningTime}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-md">Closing Time</Label>
-                    <Input
-                      type="time"
-                      placeholder="Time"
-                      onChange={handleAddClosingTime}
-                    />
-                  </div>
-                </div>
+          <div className="flex flex-col gap-3 mt-3">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Label className="text-md">Date</Label>
+                <Input
+                  type="date"
+                  placeholder="Date"
+                  value={moment().format("YYYY-MM-DD")}
+                  onChange={handleSelectDate}
+                />
               </div>
+              <div>
+                <Label className="text-md">Start Time</Label>
+                <Input
+                  type="time"
+                  placeholder="Time"
+                  value={moment().format("HH:mm")}
+                  onChange={handleAddOpeningTime}
+                />
+              </div>
+              <div>
+                <Label className="text-md">End Time</Label>
+                <Input
+                  type="time"
+                  placeholder="Time"
+                  value={moment().format("HH:mm")}
+                  onChange={handleAddClosingTime}
+                />
+              </div>
+            </div>
+          </div>
 
-              <Button
-                type="button"
-                onClick={handleAddOperationalDay}
-                className="bg-orange-500 hover:bg-orange-400"
-                disabled={disabledAddDay}
-              >
-                Add Day
-              </Button>
-            </>
-          )}
+          <Button
+            type="button"
+            onClick={handleAddOperationalDay}
+            className="bg-orange-500 hover:bg-orange-400"
+            disabled={disabledAddDay}
+          >
+            Add Date
+          </Button>
 
           <div className="mt-5 flex flex-col gap-5  w-full">
             <h1 className="text-xl font-semibold mt-5">Preview</h1>
-            {operationalDays.length === 0 && <p>No days added yet</p>}
+            {operationalDays.length === 0 && <p>No dates added yet</p>}
             <div className="overflow-auto">
               <div className="flex w-max gap-5">
                 {operationalDays.map((operationalDay, index) => (
                   <CardResultOperationalDay
-                    setDays={setDays}
                     setOperationalDays={setOperationalDays}
                     index={index}
                     key={index}
@@ -699,17 +683,14 @@ const CardResultOperationalDay = ({
   index,
   operationalDay,
   setOperationalDays,
-  setDays,
 }: {
   index: number;
-  operationalDay: OperationalDay;
-  setOperationalDays: React.Dispatch<React.SetStateAction<OperationalDay[]>>;
-  setDays: React.Dispatch<React.SetStateAction<Day[]>>;
+  operationalDay: EventOperationalDay;
+  setOperationalDays: React.Dispatch<
+    React.SetStateAction<EventOperationalDay[]>
+  >;
 }) => {
   const handleDeleteOperationalDay = (idx: number) => {
-    setDays((prevDays) =>
-      [...prevDays, operationalDay.day].sort((a, b) => a.index - b.index)
-    );
     setOperationalDays((prevOperationalDays) =>
       prevOperationalDays.filter((_, i) => i !== idx)
     );
@@ -720,8 +701,15 @@ const CardResultOperationalDay = ({
       <div className="min-w-[20rem] max-h-[20rem] border p-5 rounded-xl flex flex-col gap-5">
         <div className="flex justify-between items-center">
           <div>
-            <h1>Day</h1>
-            <p className="text-md font-semibold">{operationalDay.day.name}</p>
+            <h1>Date</h1>
+            <p className="text-md font-semibold">
+              {new Date(operationalDay.date).toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
           </div>
           <Button
             onClick={() => handleDeleteOperationalDay(index)}
@@ -734,9 +722,9 @@ const CardResultOperationalDay = ({
         </div>
         <div className="grid grid-cols-2 gap-5">
           <div>
-            <h1>Opening Time</h1>
+            <h1>Start Time</h1>
             <p className="text-md font-semibold">
-              {operationalDay.openingTime.toLocaleTimeString("en-US", {
+              {new Date(operationalDay.open_time).toLocaleTimeString("en-US", {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,
@@ -744,9 +732,9 @@ const CardResultOperationalDay = ({
             </p>
           </div>
           <div>
-            <h1>Closing Time</h1>
+            <h1>End Time</h1>
             <p className="text-md font-semibold">
-              {operationalDay.closingTime.toLocaleTimeString("en-US", {
+              {new Date(operationalDay.close_time).toLocaleTimeString("en-US", {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,

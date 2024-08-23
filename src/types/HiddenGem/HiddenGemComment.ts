@@ -6,6 +6,7 @@ export type HiddenGemsComment = {
   comment: string;
   hidden_gems_id: string;
   rating: number;
+  isRated: boolean;
   user: User;
   replies?: HiddenGemsCommentReplies[];
   created_at: Date;

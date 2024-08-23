@@ -1,15 +1,6 @@
-type Day = {
-  index: number;
-  name: string;
-};
+import { EventOperationalDay } from "@/types/Event/EventOperationalDay";
 
-type OperationalDay = {
-  day: Day;
-  openingTime: Date;
-  closingTime: Date;
-};
-
-const useValidationHiddenGems = () => {
+const useValidationEvent = () => {
   const validateCover = (cover: string) => {
     if (cover === "") {
       return "Cover is required";
@@ -64,7 +55,7 @@ const useValidationHiddenGems = () => {
     return "";
   };
 
-  const validateOperationalDays = (operationalDays: OperationalDay[]) => {
+  const validateOperationalDays = (operationalDays: EventOperationalDay[]) => {
     if (operationalDays.length === 0) {
       return "Operational Days is required";
     }
@@ -72,24 +63,24 @@ const useValidationHiddenGems = () => {
     return "";
   };
 
-  const validateOperationalDay = (operationalDay: OperationalDay) => {
-    if (operationalDay.day === undefined) {
+  const validateOperationalDay = (operationalDay: EventOperationalDay) => {
+    if (operationalDay.date === undefined) {
       return `Day is required at day`;
     }
 
-    if (operationalDay.openingTime === undefined) {
+    if (operationalDay.open_time === undefined) {
       return `Opening Time is required at day`;
     }
 
-    if (operationalDay.closingTime === undefined) {
+    if (operationalDay.close_time === undefined) {
       return `Closing Time is required at day`;
     }
 
-    if (operationalDay.openingTime > operationalDay.closingTime) {
+    if (operationalDay.open_time > operationalDay.close_time) {
       return `Opening Time should be less than Closing Time at day`;
     }
 
-    if (operationalDay.closingTime < operationalDay.openingTime) {
+    if (operationalDay.close_time < operationalDay.open_time) {
       return `Closing Time should be greater than Opening Time at day`;
     }
 
@@ -108,4 +99,4 @@ const useValidationHiddenGems = () => {
   };
 };
 
-export default useValidationHiddenGems;
+export default useValidationEvent;

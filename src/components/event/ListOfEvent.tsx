@@ -6,8 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useAuth } from "@/context/authContext";
 
 const ListOfEvent = () => {
+  const { token } = useAuth();
   const getEvents = useGetEvents();
   const [data, setData] = useState<Event[]>([]);
   const [query, setQuery] = useState<string>("");
@@ -20,16 +22,14 @@ const ListOfEvent = () => {
       () => {
         console.log("error");
       },
+      token as string,
       query
     );
   }, [query]);
 
   return (
     <>
-      <section
-        id="events"
-        className="px-5 py-10 w-full max-w-7xl mx-auto"
-      >
+      <section id="events" className="px-5 py-10 w-full max-w-7xl mx-auto">
         <Filter setQuery={setQuery} />
 
         <div className="w-full max-w-7xl mx-auto pt-28 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

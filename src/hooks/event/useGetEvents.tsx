@@ -13,6 +13,8 @@ export const useGetEvents = () => {
 
     const URL = `${API_BASE_URL}/event${query !== "" ? `?${query}` : ""}`;
 
+    console.log(URL);
+
     try {
       const response = await axios.get(URL, { headers });
       const events = response.data.data;

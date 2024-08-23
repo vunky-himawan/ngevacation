@@ -15,6 +15,10 @@ export const usePostComment = () => {
     data: PostCommentRequest
   ) => {
     try {
+      // if (data.rating < 1) {
+      //   throw new Error("Rating must be greater than 1");
+      // }
+
       await axios.patch(
         `${API_BASE_URL}/hidden-gems/${data.hidden_gems_id}/comment`,
         { comment: data.comment, rating: data.rating },

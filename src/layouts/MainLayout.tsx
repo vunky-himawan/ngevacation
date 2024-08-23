@@ -9,6 +9,7 @@ type MainLayoutsProps = {
   withHeader?: boolean;
   searchPlaceholder?: string;
   withSearch?: boolean;
+  navigationLink?: string;
 };
 
 const MainLayout = ({
@@ -17,6 +18,7 @@ const MainLayout = ({
   withHeader = true,
   searchPlaceholder = "Search",
   withSearch = false,
+  navigationLink,
 }: MainLayoutsProps) => {
   const pathLocation = useLocation();
 
@@ -65,6 +67,7 @@ const MainLayout = ({
         <main className="w-screen relative">
           {withHeader && (
             <Header
+              navigationLink={navigationLink}
               withSearch={withSearch}
               searchPlaceholder={searchPlaceholder}
             />

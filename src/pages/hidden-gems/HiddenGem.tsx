@@ -32,6 +32,7 @@ import { HiddenGemsOperationDay } from "@/types/HiddenGem/HiddenGemOperationDay"
 const HiddenGem = () => {
   const { token } = useAuth();
   const { hiddenGemId } = useParams<{ hiddenGemId: string }>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [data, setData] = useState<HiddenGemModel>();
   const [rating, setRating] = useState<number>(0);
@@ -67,11 +68,11 @@ const HiddenGem = () => {
   };
 
   const SEO: SEOModel = {
-    title: "Articles",
+    title: "Hidden Gems",
     description:
       "Explore a variety of captivating articles that uncover hidden destinations and unique experiences for travelers. Find inspiration for your next journey on Hidden Gems.",
     siteName: "Hidden Gems",
-    siteUrl: "https://hiddengames.com/articles",
+    siteUrl: "https://hiddengames.com/hidden-gems",
     keywords: [
       "hidden gems",
       "travel articles",
@@ -89,12 +90,22 @@ const HiddenGem = () => {
         setData(data);
         setIsLoading(false);
         SEO.title = data.title;
+        console.log(data);
       },
       () => {
         console.log("error");
-      }
+      },
+      token as string
     );
   }, []);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setRating(rating);
+    } else {
+      setRating(0);
+    }
+  }, [isModalOpen, rating]);
 
   return (
     <>
@@ -109,7 +120,7 @@ const HiddenGem = () => {
               <Skeleton className="w-full h-[1rem] relative flex justify-center items-center rounded-3xl" />
             </div>
           )}
-          {!isLoading && (
+          {!isLoading && data && (
             <>
               <Swiper
                 slidesPerView={1}
@@ -157,6 +168,36 @@ const HiddenGem = () => {
               <Badge className="w-fit p-2 rounded-full bg-orange-500">
                 {data?.category.category_name}
               </Badge>
+              <div className="flex gap-3">
+                <div className="flex">
+                  <div
+                    className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                      data?.rating >= 1 ? "bg-yellow-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <div
+                    className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                      data?.rating >= 2 ? "bg-yellow-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <div
+                    className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                      data?.rating >= 3 ? "bg-yellow-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <div
+                    className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                      data?.rating >= 4 ? "bg-yellow-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <div
+                    className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                      data?.rating >= 5 ? "bg-yellow-500" : "bg-gray-300"
+                    }`}
+                  />
+                </div>
+                <p className="">{data?.rating.toFixed(1)}</p>
+              </div>
               <p className="text-md">
                 Range Price :{" "}
                 {data?.price_start.toLocaleString("id-ID", {
@@ -170,8 +211,8 @@ const HiddenGem = () => {
                 })}
               </p>
               <div className="w-full overflow-hidden">
+                <h1 className="text-xl font-semibold">Operational Days</h1>
                 <div className="overflow-auto">
-                  <h1 className="text-xl font-semibold">Operational Days</h1>
                   <div className="flex gap-5 w-max mt-3">
                     {data?.operation_days.map(
                       (operational: HiddenGemsOperationDay) => (
@@ -190,94 +231,105 @@ const HiddenGem = () => {
                 <h1 className="text-xl font-semibold">Description</h1>
                 <p>{data?.description}</p>
               </div>
-              <div className="w-full h-[20vh] lg:h-[40vh] p-5 flex flex-col justify-center items-center gap-5">
-                <h1 className="text-xl font-semibold">
-                  Do you like this hidden gem?
-                </h1>
-                <div className="flex gap-3 items-center">
-                  {!token && (
-                    <Link to="/auth/login" className="flex gap-3 items-center">
-                      <Button className="bg-orange-500 text-white hover:bg-orange-400">
-                        Login to rate
-                      </Button>
-                    </Link>
-                  )}
-                  {token && (
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <div
-                          onClick={() => setRating(rating == 1 ? 0 : 1)}
-                          className={`icon-[iconamoon--star-fill] w-8 h-8 ${
-                            rating >= 1 ? "bg-yellow-500" : "bg-gray-300"
-                          }`}
-                        />
-                      </DialogTrigger>
-                      <DialogTrigger asChild>
-                        <div
-                          onClick={() => setRating(rating == 2 ? 0 : 2)}
-                          className={`icon-[iconamoon--star-fill] w-8 h-8 ${
-                            rating >= 2 ? "bg-yellow-500" : "bg-gray-300"
-                          }`}
-                        />
-                      </DialogTrigger>
-                      <DialogTrigger asChild>
-                        <div
-                          onClick={() => setRating(rating == 3 ? 0 : 3)}
-                          className={`icon-[iconamoon--star-fill] w-8 h-8 ${
-                            rating >= 3 ? "bg-yellow-500" : "bg-gray-300"
-                          }`}
-                        />
-                      </DialogTrigger>
-                      <DialogTrigger asChild>
-                        <div
-                          onClick={() => setRating(rating == 4 ? 0 : 4)}
-                          className={`icon-[iconamoon--star-fill] w-8 h-8 ${
-                            rating >= 4 ? "bg-yellow-500" : "bg-gray-300"
-                          }`}
-                        />
-                      </DialogTrigger>
-                      <DialogTrigger asChild>
-                        <div
-                          onClick={() => setRating(rating == 5 ? 0 : 5)}
-                          className={`icon-[iconamoon--star-fill] w-8 h-8 ${
-                            rating == 5 ? "bg-yellow-500" : "bg-gray-300"
-                          }`}
-                        />
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>
-                            Do you like this hidden gem?
-                          </DialogTitle>
-                        </DialogHeader>
-                        <DialogDescription>
+              {!data?.isRated && (
+                <div className="w-full h-[20vh] lg:h-[40vh] p-5 flex flex-col justify-center items-center gap-5">
+                  <h1 className="text-xl font-semibold">
+                    Do you like this hidden gem?
+                  </h1>
+                  <div className="flex gap-3 items-center">
+                    {!token && (
+                      <Link
+                        to="/auth/login"
+                        className="flex gap-3 items-center"
+                      >
+                        <Button className="bg-orange-500 text-white hover:bg-orange-400">
+                          Login to rate
+                        </Button>
+                      </Link>
+                    )}
+                    {token && (
+                      <Dialog
+                        onOpenChange={() => {
+                          setIsModalOpen(!isModalOpen);
+                        }}
+                        open={data?.isRated ? false : isModalOpen}
+                      >
+                        <DialogTrigger disabled={true} asChild>
+                          <div
+                            onClick={() => setRating(rating == 1 ? 0 : 1)}
+                            className={`icon-[iconamoon--star-fill] w-8 h-8 ${
+                              rating >= 1 ? "bg-yellow-500" : "bg-gray-300"
+                            }`}
+                          />
+                        </DialogTrigger>
+                        <DialogTrigger disabled={true} asChild>
+                          <div
+                            onClick={() => setRating(rating == 2 ? 0 : 2)}
+                            className={`icon-[iconamoon--star-fill] w-8 h-8 ${
+                              rating >= 2 ? "bg-yellow-500" : "bg-gray-300"
+                            }`}
+                          />
+                        </DialogTrigger>
+                        <DialogTrigger disabled={true} asChild>
+                          <div
+                            onClick={() => setRating(rating == 3 ? 0 : 3)}
+                            className={`icon-[iconamoon--star-fill] w-8 h-8 ${
+                              rating >= 3 ? "bg-yellow-500" : "bg-gray-300"
+                            }`}
+                          />
+                        </DialogTrigger>
+                        <DialogTrigger disabled={true} asChild>
+                          <div
+                            onClick={() => setRating(rating == 4 ? 0 : 4)}
+                            className={`icon-[iconamoon--star-fill] w-8 h-8 ${
+                              rating >= 4 ? "bg-yellow-500" : "bg-gray-300"
+                            }`}
+                          />
+                        </DialogTrigger>
+                        <DialogTrigger disabled={true} asChild>
+                          <div
+                            onClick={() => setRating(rating == 5 ? 0 : 5)}
+                            className={`icon-[iconamoon--star-fill] w-8 h-8 ${
+                              rating == 5 ? "bg-yellow-500" : "bg-gray-300"
+                            }`}
+                          />
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>
+                              Do you like this hidden gem?
+                            </DialogTitle>
+                          </DialogHeader>
                           <DialogDescription>
-                            {token && (
-                              <form
-                                onSubmit={handleReplySubmit}
-                                className="flex w-full flex-col items-center space-x-2"
-                              >
-                                <Textarea
-                                  placeholder="Comment"
-                                  onChange={(
-                                    e: React.ChangeEvent<HTMLTextAreaElement>
-                                  ) => setMessage(e.target.value)}
-                                  value={message}
-                                />
-                                <div className="flex gap-3 w-full justify-end mt-3">
-                                  <Button className="bg-orange-500 text-white hover:bg-orange-400">
-                                    Submit
-                                  </Button>
-                                </div>
-                              </form>
-                            )}
+                            <DialogDescription>
+                              {token && (
+                                <form
+                                  onSubmit={handleReplySubmit}
+                                  className="flex w-full flex-col items-center space-x-2"
+                                >
+                                  <Textarea
+                                    placeholder="Comment"
+                                    onChange={(
+                                      e: React.ChangeEvent<HTMLTextAreaElement>
+                                    ) => setMessage(e.target.value)}
+                                    value={message}
+                                  />
+                                  <div className="flex gap-3 w-full justify-end mt-3">
+                                    <Button className="bg-orange-500 text-white hover:bg-orange-400">
+                                      Submit
+                                    </Button>
+                                  </div>
+                                </form>
+                              )}
+                            </DialogDescription>
                           </DialogDescription>
-                        </DialogDescription>
-                      </DialogContent>
-                    </Dialog>
-                  )}
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
+
               {data && data?.comment.length > 0 && (
                 <>
                   <Comment
@@ -429,6 +481,33 @@ const CommentCard = ({
           </button>
         </div>
         <div className="flex flex-col gap-2">
+          <div className="flex">
+            <div
+              className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                comment.rating >= 1 ? "bg-yellow-500" : "bg-gray-300"
+              }`}
+            />
+            <div
+              className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                comment.rating >= 2 ? "bg-yellow-500" : "bg-gray-300"
+              }`}
+            />
+            <div
+              className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                comment.rating >= 3 ? "bg-yellow-500" : "bg-gray-300"
+              }`}
+            />
+            <div
+              className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                comment.rating >= 4 ? "bg-yellow-500" : "bg-gray-300"
+              }`}
+            />
+            <div
+              className={`icon-[iconamoon--star-fill] w-5 h-5 ${
+                comment.rating >= 5 ? "bg-yellow-500" : "bg-gray-300"
+              }`}
+            />
+          </div>
           <p>{comment.comment}</p>
         </div>
         <div className="flex gap-10 items-center">

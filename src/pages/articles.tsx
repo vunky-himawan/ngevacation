@@ -22,7 +22,12 @@ const SEO: SEOModel = {
 const Articles = () => {
   return (
     <>
-      <MainLayout withSearch={true} SEO={SEO}>
+      <MainLayout
+        navigationLink="/articles/result"
+        withSearch={true}
+        searchPlaceholder="Search articles"
+        SEO={SEO}
+      >
         <ArticleHero />
         <ListOfArticle />
       </MainLayout>

@@ -12,6 +12,8 @@ export const useGetHiddenGemById = () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
+      console.log(hiddenGemId);
+
       const URL = `${API_BASE_URL}/hidden-gems/${hiddenGemId}`;
 
       const response = await axios.get(URL, { headers });

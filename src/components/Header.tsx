@@ -8,9 +8,11 @@ import { User } from "@/types/User";
 const Header = ({
   withSearch = false,
   searchPlaceholder,
+  navigationLink,
 }: {
   withSearch: boolean;
   searchPlaceholder: string;
+  navigationLink?: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -38,7 +40,7 @@ const Header = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSearchParams({ s: search });
-    navigate(`/articles/result?s=${decodeURIComponent(search)}`);
+    navigate(`${navigationLink}?s=${decodeURIComponent(search)}`);
   };
 
   return (

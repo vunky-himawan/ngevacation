@@ -8,6 +8,7 @@ export type HiddenGem = {
   title: string;
   price_start: number;
   price_end: number;
+  isRated: boolean;
   location: string;
   rating: number;
   category: HiddenGemsCategory;
