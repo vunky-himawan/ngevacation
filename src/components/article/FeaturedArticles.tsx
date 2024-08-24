@@ -1,4 +1,4 @@
-import { useGetArticles } from "@/hooks/article/useGetArticlesFixed";
+import { useGetArticles } from "@/hooks/article/useGetArticles";
 import { Article } from "@/types/Article";
 import { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";

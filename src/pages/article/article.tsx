@@ -2,10 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { useArticleBookmark } from "@/hooks/article/useArticleBookmark";
 import { useArticleLike } from "@/hooks/article/useArticleLike";
-import { useComment } from "@/hooks/article/comment/useComment";
 import { useCommentLike } from "@/hooks/article/comment/useCommentLike";
 import { useGetArticle } from "@/hooks/article/useGetArticle";
 import { useReplyCommentLike } from "@/hooks/article/reply/useReplyCommentLike";
@@ -19,6 +18,8 @@ import { ReplyComment } from "@/types/ReplyComment";
 import { decode } from "@/utils/decode";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useCommmentArticle } from "@/hooks/article/comment/useComment";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ArticleDetail extends Article {
   count_views: number;
@@ -31,24 +32,33 @@ interface ArticleDetail extends Article {
 const ArticleDetail = () => {
   const { token } = useAuth();
   const { articleId } = useParams();
-  const articleData: ArticleDetail | null = useGetArticle({
-    articleId: articleId as string,
-  });
+  const getArticle = useGetArticle();
+  const [articleData, setArticleData] = useState<ArticleDetail>();
   const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [bookmarks, setBookmarks] = useState<number>(0);
   const [liked, setLiked] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(0);
   const [comments, setComments] = useState<Array<Comment>>([]);
+  const [onSendComment, setOnSendComment] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (articleData) {
-      setBookmarked(articleData.marked_bookmark);
-      setLiked(articleData.marked_like);
-      setLikes(articleData.count_likes);
-      setComments(articleData.comment);
-      setBookmarks(articleData.count_bookmarks);
-    }
-  }, [articleData]);
+    getArticle(
+      (data: ArticleDetail) => {
+        setArticleData(data);
+        setBookmarked(data.marked_bookmark);
+        setLiked(data.marked_like);
+        setLikes(data.count_likes);
+        setComments(data.comment);
+        setBookmarks(data.count_bookmarks);
+        setOnSendComment(false);
+        setIsLoading(false);
+      },
+      () => {},
+      articleId as string,
+      token as string
+    );
+  }, [onSendComment]);
 
   const handleLike = useArticleLike(
     articleData?.article_id as string,
@@ -57,15 +67,11 @@ const ArticleDetail = () => {
 
   const handleBookmark = useArticleBookmark(articleData?.article_id as string);
 
-  if (!articleData) {
-    return <div>Not Found</div>;
-  }
-
   const SEO: SEOModel = {
-    title: articleData.title,
-    description: decode(articleData.content),
+    title: articleData?.title || "",
+    description: decode(articleData?.content || ""),
     siteName: "Hidden Gems",
-    siteUrl: `https://hiddengems.com/article/${articleData.article_id}`,
+    siteUrl: `https://hiddengems.com/article/${articleData?.article_id}`,
     keywords: [
       "hidden gems",
       "travel articles",
@@ -79,80 +85,97 @@ const ArticleDetail = () => {
   return (
     <>
       <MainLayout SEO={SEO} withSearch={true}>
-        <article className="mx-auto w-full lg:max-w-6xl 2xl:max-w-7xl mt-24 p-5 flex flex-col gap-5">
-          <img
-            src={articleData.cover}
-            alt=""
-            className="w-full h-full rounded-3xl"
-          />
-          <h1 className="font-cabinet font-semibold text-5xl">
-            {articleData.title}
-          </h1>
-          <div>{new Date(articleData.created_at).toDateString()}</div>
-          <div className="flex gap-5 items-center">
-            <Avatar>
-              <AvatarImage
-                src={articleData.user.profile}
-                alt={articleData.user.fullname}
-              />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            by {articleData.user.username}
+        {isLoading && (
+          <div className="mx-auto w-full lg:max-w-6xl 2xl:max-w-7xl mt-24 p-5 flex flex-col gap-5">
+            <div className="w-full relative flex flex-col gap-5 justify-center rounded-3xl">
+              <Skeleton className="w-full h-[50vh] relative flex justify-center items-center rounded-3xl" />
+              <Skeleton className="w-full h-[1rem] relative flex justify-center items-center rounded-3xl" />
+              <Skeleton className="w-full h-[1rem] relative flex justify-center items-center rounded-3xl" />
+              <Skeleton className="w-full h-[1rem] relative flex justify-center items-center rounded-3xl" />
+              <Skeleton className="w-full h-[1rem] relative flex justify-center items-center rounded-3xl" />
+            </div>
           </div>
-          <div className="border-b border-yellow-500 pb-5 flex gap-10">
-            <Button
-              onClick={() => {
-                setLikes(liked ? likes - 1 : likes + 1);
-                setLiked(!liked);
-                handleLike();
-              }}
-              className="bg-transparent shadow-none text-black p-0 flex items-center gap-2 justify-center text-sm hover:bg-transparent"
-            >
-              {liked ? (
-                <span className="icon-[ion--sparkles] w-6 h-6"></span>
-              ) : (
-                <span className="icon-[ion--sparkles-outline] w-6 h-6"></span>
-              )}
-              {likes}
-            </Button>
-            <Button
-              onClick={handleBookmark}
-              className="bg-transparent shadow-none text-black p-0 flex items-center gap-2 justify-center text-sm hover:bg-transparent"
-            >
-              {bookmarked ? (
-                <span className="icon-[iconamoon--bookmark-fill] w-7 h-7"></span>
-              ) : (
-                <span className="icon-[iconamoon--bookmark-light] w-7 h-7"></span>
-              )}
-              {bookmarks}
-            </Button>
-            {/* <div className="bg-transparent shadow-none text-black p-0 flex items-center gap-2 justify-center text-sm">
+        )}
+        {!isLoading && articleData && (
+          <article className="mx-auto w-full lg:max-w-6xl 2xl:max-w-7xl mt-24 p-5 flex flex-col gap-5">
+            <img
+              src={articleData.cover}
+              alt=""
+              className="w-full h-full rounded-3xl"
+            />
+            <h1 className="font-cabinet font-semibold text-5xl">
+              {articleData.title}
+            </h1>
+            <div>{new Date(articleData.created_at).toDateString()}</div>
+            <div className="flex gap-5 items-center">
+              <Avatar>
+                <AvatarImage
+                  src={articleData.user.profile}
+                  alt={articleData.user.fullname}
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              by {articleData.user.username}
+            </div>
+            <div className="border-b border-yellow-500 pb-5 flex gap-10">
+              <Button
+                onClick={() => {
+                  setLikes(liked ? likes - 1 : likes + 1);
+                  setLiked(!liked);
+                  handleLike();
+                }}
+                className="bg-transparent shadow-none text-black p-0 flex items-center gap-2 justify-center text-sm hover:bg-transparent"
+              >
+                {liked ? (
+                  <span className="icon-[ion--sparkles] w-6 h-6"></span>
+                ) : (
+                  <span className="icon-[ion--sparkles-outline] w-6 h-6"></span>
+                )}
+                {likes}
+              </Button>
+              <Button
+                onClick={handleBookmark}
+                className="bg-transparent shadow-none text-black p-0 flex items-center gap-2 justify-center text-sm hover:bg-transparent"
+              >
+                {bookmarked ? (
+                  <span className="icon-[iconamoon--bookmark-fill] w-7 h-7"></span>
+                ) : (
+                  <span className="icon-[iconamoon--bookmark-light] w-7 h-7"></span>
+                )}
+                {bookmarks}
+              </Button>
+              {/* <div className="bg-transparent shadow-none text-black p-0 flex items-center gap-2 justify-center text-sm">
               <span className="icon-[iconamoon--eye-light] w-7 h-7"></span>
               {articleData.count_views}
             </div> */}
-          </div>
-          <div
-            className="prose prose-xl mx-auto w-full max-w-7xl"
-            dangerouslySetInnerHTML={{ __html: articleData.content }}
-          ></div>
-          <div>
-            <h1 className="font-cabinet font-semibold text-2xl">Tags</h1>
-            <div className="flex gap-5 items-center flex-wrap mt-2">
-              {articleData.tag.map((tag: string) => (
-                <Link to={`/articles/tag/${tag}`} key={tag}>
-                  <Badge
-                    key={tag}
-                    className="text-black bg-muted font-normal hover:bg-gray-200"
-                  >
-                    #{tag}
-                  </Badge>
-                </Link>
-              ))}
             </div>
-          </div>
-          <hr />
-          <ArticleComment articleId={articleId as string} comments={comments} />
-        </article>
+            <div
+              className="prose prose-xl mx-auto w-full max-w-7xl"
+              dangerouslySetInnerHTML={{ __html: articleData.content }}
+            ></div>
+            <div>
+              <h1 className="font-cabinet font-semibold text-2xl">Tags</h1>
+              <div className="flex gap-5 items-center flex-wrap mt-2">
+                {articleData.tag.map((tag: string) => (
+                  <Link to={`/articles/tag/${tag}`} key={tag}>
+                    <Badge
+                      key={tag}
+                      className="text-black bg-muted font-normal hover:bg-gray-200"
+                    >
+                      #{tag}
+                    </Badge>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <hr />
+            <ArticleComment
+              setOnSendComment={setOnSendComment}
+              articleId={articleId as string}
+              comments={comments}
+            />
+          </article>
+        )}
       </MainLayout>
     </>
   );
@@ -161,23 +184,32 @@ const ArticleDetail = () => {
 const ArticleComment = ({
   comments,
   articleId,
+  setOnSendComment,
 }: {
   comments: Array<Comment>;
   articleId: string;
+  setOnSendComment: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { token } = useAuth();
   const [message, setMessage] = useState<string>("");
-
-  const sendComment = useComment({
-    articleId,
-    comment: message,
-    token: token as string,
-  });
+  const sendComment = useCommmentArticle();
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendComment();
-    setMessage("");
+    sendComment(
+      () => {
+        setOnSendComment(true);
+        setMessage("");
+      },
+      () => {
+        console.log("error");
+      },
+      {
+        articleId,
+        comment: message,
+        token: token as string,
+      }
+    );
   };
 
   return (

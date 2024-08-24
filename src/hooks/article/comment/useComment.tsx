@@ -1,43 +1,46 @@
-import { API_BASE_URL } from "@/data/api";
+import { API_BASE_URL } from "@/data/Api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export const useComment = ({
-  articleId,
-  comment,
-  token,
-}: {
+type CommentRequest = {
   articleId: string;
   comment: string;
   token: string;
-}) => {
+};
+
+export const useCommmentArticle = () => {
   const navigate = useNavigate();
-
-  const sendComment = async () => {
-    if (!token) {
-      navigate("/auth/login");
-      return;
-    }
-
-    if (comment.trim() === "") {
-      alert("Please enter a comment");
-      return;
-    }
-
+  const postComment = async (
+    onSuccess: () => void,
+    onError: () => void,
+    data: CommentRequest
+  ) => {
     try {
+      if (!data.token) {
+        navigate("/auth/login");
+        return;
+      }
+
+      if (data.comment.trim() === "") {
+        alert("Please enter a comment");
+        return;
+      }
+
       await axios.patch(
-        `${API_BASE_URL}/article/${articleId}/comment`,
-        { comment: comment },
+        `${API_BASE_URL}/article/${data.articleId}/comment`,
+        { comment: data.comment },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${data.token}`,
           },
         }
       );
+
+      onSuccess();
     } catch (error) {
-      console.error("Failed to like the article:", error);
+      onError();
     }
   };
 
-  return sendComment;
+  return postComment;
 };

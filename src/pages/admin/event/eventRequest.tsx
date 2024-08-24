@@ -1,6 +1,6 @@
 import Loading from "@/components/Skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { useGetEvents } from "@/hooks/event/useGetEvents";
 import AdminLayout from "@/layouts/AdminLayout";
 import { Event } from "@/types/Event/Event";

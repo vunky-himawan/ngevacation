@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 
 const Error = ({ code, message }: { code: number; message: string }) => {

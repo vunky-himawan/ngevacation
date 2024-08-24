@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { useGetBoard } from "@/hooks/planner/useGetBoard";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";

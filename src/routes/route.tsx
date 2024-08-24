@@ -1,6 +1,6 @@
-import Index from "@/pages";
-import Auth from "@/pages/auth";
-import DashboardAdmin from "@/pages/admin/dashboard";
+import Index from "@/pages/Index";
+import Auth from "@/pages/Auth";
+import DashboardAdmin from "@/pages/admin/Dashboard";
 import {
   createBrowserRouter,
   RouteObject,
@@ -9,29 +9,31 @@ import {
 } from "react-router-dom";
 import { RouteAuthGuard } from "./RouteAuthGuard";
 import WriteArticle from "@/pages/traveler/WriteArticle";
-import Articles from "@/pages/articles";
-import ArticleDetail from "@/pages/article/article";
-import ArticleSearchResult from "@/pages/article/articleSearchResult";
-import TravelerArticles from "@/pages/traveler/articles";
-import ArticleEdit from "@/pages/traveler/articleEdit";
-import TravelerLibrary from "@/pages/traveler/library";
-import HiddenGemsPost from "@/pages/hidden-gems/hiddenGemsPost";
+import Articles from "@/pages/Articles";
+import ArticleDetail from "@/pages/article/Article";
+import ArticleSearchResult from "@/pages/article/ArticleSearchResult";
+import TravelerArticles from "@/pages/traveler/Articles";
+import ArticleEdit from "@/pages/traveler/ArticleEdit";
+import TravelerLibrary from "@/pages/traveler/Library";
+import HiddenGemsPost from "@/pages/hidden-gems/HiddenGemsPost";
 import { TravelerGuard } from "./TravelerGuard";
 import { AdminGuard } from "./AdminGuard";
-import Error from "@/pages/error";
+import Error from "@/pages/Error";
 import { GuestTravelerGuard } from "./GuestTravelerGuard";
-import HiddenGems from "@/pages/hiddenGems";
-import HiddenGemsRequest from "@/pages/admin/hidden-gem/hiddenGemsRequest";
-import HiddenGemsDetail from "@/pages/admin/hidden-gem/hiddenGemsDetail";
-import EventRequest from "@/pages/admin/event/eventRequest";
-import UserReportList from "@/pages/admin/report/userReportList";
+import HiddenGems from "@/pages/HiddenGems";
+import HiddenGemsRequest from "@/pages/admin/hidden-gem/HiddenGemsRequest";
+import HiddenGemsDetail from "@/pages/admin/hidden-gem/HiddenGemsDetail";
+import EventRequest from "@/pages/admin/event/EventRequest";
+import UserReportList from "@/pages/admin/report/UserReportList";
 import EventPost from "@/pages/event/EventPost";
 import HiddenGem from "@/pages/hidden-gems/HiddenGem";
-import Events from "@/pages/events";
+import Events from "@/pages/Events";
 import PlannerPost from "@/pages/planner/PlannerPost";
 import Planner from "@/pages/traveler/planner/Planner";
 import PlannerDetail from "@/pages/traveler/planner/PlannerDetail";
 import HiddenGemSearchResult from "@/pages/hidden-gems/HiddenGemSearchResult";
+import EventSearchResult from "@/pages/event/EventSearchResult";
+import Event from "@/pages/event/Event";
 
 const Router = () => {
   const ArticlePath = [
@@ -127,7 +129,15 @@ const Router = () => {
           path: "/events",
           element: <Events />,
         },
+        {
+          path: "/events/result",
+          element: <EventSearchResult />,
+        },
       ],
+    },
+    {
+      path: "/event/:eventId",
+      element: <Event />,
     },
     {
       path: "/event/post",

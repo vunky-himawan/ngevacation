@@ -3,12 +3,24 @@ import { useGetArticles } from "@/hooks/article/useGetArticles";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 import { Article } from "@/types/Article";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 const ArticleSearchResult = () => {
   const [searchParams] = useSearchParams();
-  const { articlesData } = useGetArticles({
-    search: searchParams.get("s") || "",
+  const getArticles = useGetArticles();
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    getArticles(
+      (articles: Article[]) => {
+        setArticles(articles);
+      },
+      () => {
+        console.log("error");
+      },
+      `s=${searchParams.get("s")}`
+    );
   });
 
   const SEO: SEOModel = {
@@ -38,8 +50,8 @@ const ArticleSearchResult = () => {
             </h1>
           </section>
           <section>
-            {articlesData &&
-              articlesData.map((article: Article) => (
+            {articles &&
+              articles.map((article: Article) => (
                 <ArticleSearchResultCard
                   key={article.article_id}
                   article={article}

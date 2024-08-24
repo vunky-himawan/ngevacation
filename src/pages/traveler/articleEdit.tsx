@@ -4,21 +4,26 @@ import WriteArticle from "./WriteArticle";
 import { Article } from "@/types/Article";
 import { useEffect, useState } from "react";
 import Loading from "@/components/Skeleton";
+import { useAuth } from "@/context/AuthContext";
 
 const ArticleEdit = () => {
+  const { token } = useAuth();
   const { articleId } = useParams<{ articleId: string }>();
   const [data, setData] = useState<Article | null>(null);
-
-  const fetchedData = useGetArticle({
-    articleId: articleId as string,
-    withInterval: false,
-  });
+  const getArticle = useGetArticle();
 
   useEffect(() => {
-    if (fetchedData) {
-      setData(fetchedData);
-    }
-  }, [fetchedData]);
+    getArticle(
+      (data: Article) => {
+        setData(data);
+      },
+      () => {
+        console.log("error");
+      },
+      articleId as string,
+      token as string
+    );
+  }, []);
 
   if (!data) {
     return <Loading />;

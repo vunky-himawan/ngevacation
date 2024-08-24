@@ -1,7 +1,7 @@
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { useGetBoards } from "@/hooks/planner/useGetBoards";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";

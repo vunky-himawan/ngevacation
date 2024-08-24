@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { useGetHiddenGemById } from "@/hooks/hidden-gems/useGetHiddenGemById";
 import AdminLayout from "@/layouts/AdminLayout";
 import { HiddenGem } from "@/types/HiddenGem/HiddenGems";

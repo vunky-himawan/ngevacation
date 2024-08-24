@@ -22,7 +22,12 @@ const SEO: SEOModel = {
 const Events = () => {
   return (
     <>
-      <MainLayout SEO={SEO}>
+      <MainLayout
+        SEO={SEO}
+        withSearch
+        searchPlaceholder="Search Events"
+        navigationLink="/events/result"
+      >
         <EventHero />
         <ListOfEvent />
       </MainLayout>

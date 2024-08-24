@@ -10,12 +10,10 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { useAuth } from "@/context/authContext";
-import useGetTags from "@/hooks/useGetTags";
+import { useAuth } from "@/context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import UsePostArticle from "@/hooks/usePostArticle";
 import { UseValidationArticle } from "@/hooks/useValidationArticle";
 import {
   Dialog,
@@ -27,7 +25,9 @@ import {
 } from "@/components/ui/dialog";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
-import UseUpdateArticle from "@/hooks/article/useUpdateArticle";
+import { useGetTags } from "@/hooks/article/useGetTags";
+import { usePostArticle } from "@/hooks/article/usePostArticle";
+import { useUpdateArticle } from "@/hooks/article/useUpdateArticle";
 
 type ArticlePayload = {
   title: string;
@@ -35,12 +35,6 @@ type ArticlePayload = {
   cover: File;
   status: "DRAFT" | "PUBLISHED";
   tags: string[];
-};
-
-type ArticleResponse = {
-  title: string;
-  status: "success" | "failed";
-  message: string;
 };
 
 const SEO: SEOModel = {
@@ -75,7 +69,6 @@ const WriteArticle = ({
   isEdit?: boolean;
 }) => {
   const { user, logout } = useAuth();
-  const tagData: string[] | undefined = useGetTags();
   const [tags, setTags] = useState<string[]>([]);
   const [content, setContent] = useState<string>(dataContent ?? "");
   const [newTag, setNewTag] = useState<string>("");
@@ -87,9 +80,12 @@ const WriteArticle = ({
   const [coverError, setCoverError] = useState<string>("");
   const [titleError, setTitleError] = useState<string>("");
   const [contentError, setContentError] = useState<string>("");
-  const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">("DRAFT");
+  const navigate = useNavigate();
+  const getTags = useGetTags();
+  const postArticle = usePostArticle();
+  const updateArticle = useUpdateArticle();
 
   const { toast } = useToast();
 
@@ -168,27 +164,47 @@ const WriteArticle = ({
         status: status,
       };
 
-      const message: ArticleResponse = isEdit
-        ? await UseUpdateArticle(articlePayload, articleId as string)
-        : await UsePostArticle(articlePayload);
-
-      if (message.status === "success") {
-        toast({
-          title: message.title,
-          description: message.message,
-          className: "bg-green-500 text-white border-none",
-          duration: 1000,
-        });
+      if (isEdit) {
+        updateArticle(
+          () => {
+            toast({
+              title: title,
+              description: "Article updated successfully",
+              className: "bg-green-500 text-white border-none",
+              duration: 1000,
+            });
+          },
+          () => {
+            toast({
+              title: title,
+              description: "Something went wrong",
+              className: "bg-red-500 text-white border-none",
+              duration: 1000,
+            });
+          },
+          articlePayload,
+          articleId!
+        );
       } else {
-        toast({
-          title: message.title,
-          description:
-            message.message == "File is required"
-              ? "Please upload cover"
-              : "Something went wrong",
-          className: "bg-red-500 text-white border-none",
-          duration: 1000,
-        });
+        postArticle(
+          () => {
+            toast({
+              title: title,
+              description: "Article posted successfully",
+              className: "bg-green-500 text-white border-none",
+              duration: 1000,
+            });
+          },
+          () => {
+            toast({
+              title: title,
+              description: "Something went wrong",
+              className: "bg-red-500 text-white border-none",
+              duration: 1000,
+            });
+          },
+          articlePayload
+        );
       }
 
       localStorage.removeItem("images");
@@ -198,10 +214,15 @@ const WriteArticle = ({
   };
 
   useEffect(() => {
-    if (tagData) {
-      setTags(tagData);
-    }
-  }, [tagData]);
+    getTags(
+      (data: string[]) => {
+        setTags(data);
+      },
+      () => {
+        console.log("error");
+      }
+    );
+  }, []);
 
   return (
     <>
@@ -384,14 +405,14 @@ const WriteArticle = ({
               {isEdit ? (
                 <Button
                   onClick={() => setStatus("PUBLISHED")}
-                  className="w-fit rounded-full bg-yellow-500"
+                  className="w-fit rounded-full bg-orange-500"
                 >
                   Update
                 </Button>
               ) : (
                 <Button
                   onClick={() => setStatus("PUBLISHED")}
-                  className="w-fit rounded-full bg-yellow-500"
+                  className="w-fit rounded-full bg-orange-500"
                 >
                   Publish
                 </Button>

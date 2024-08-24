@@ -14,8 +14,8 @@ import Link from "@tiptap/extension-link";
 import Toolbar from "./Toolbar";
 import Highlight from "@tiptap/extension-highlight";
 import axios from "axios";
-import { API_BASE_URL } from "@/data/api";
-import { useAuth } from "@/context/authContext";
+import { API_BASE_URL } from "@/data/Api";
+import { useAuth } from "@/context/AuthContext";
 
 const Tiptap = ({
   setError,

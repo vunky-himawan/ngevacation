@@ -1,5 +1,5 @@
-import { API_BASE_URL } from "@/data/api";
-import useGetUser from "@/hooks/useGetUser";
+import { API_BASE_URL } from "@/data/Api";
+import { useGetUser } from "@/hooks/useGetUser";
 import { User } from "@/types/User";
 import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
@@ -12,7 +12,7 @@ type AuthContextType = {
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
   login: (email: string, password: string) => Promise<void>;
   role: string;
-  user: User | undefined;
+  user: User | null;
   logout: () => Promise<void>;
   signUp: (
     fullname: string,
@@ -31,7 +31,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.getItem("token") || null
   );
   const [role, setRole] = useState<string>("");
-  const user: User | undefined = useGetUser();
+  const getUser = useGetUser();
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (email: string, password: string) => {
     try {
@@ -69,6 +70,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       setToken(null);
       setRole("");
+      setUser(null);
       localStorage.removeItem("token");
     } catch (error) {
       console.log(error);
@@ -79,6 +81,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (token) {
       const decodeToken = jwtDecode<JwtPayloadAuth>(token);
       setRole(decodeToken.role === "ADMIN" ? "admin" : "traveler");
+      getUser(
+        (data: User) => {
+          setUser(data);
+        },
+        () => {
+          console.log("error");
+        },
+        token as string
+      );
     }
   }, [token]);
 

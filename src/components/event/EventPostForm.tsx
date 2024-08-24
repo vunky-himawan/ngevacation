@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/components/ui/use-toast";
 import { useGetEventCategory } from "@/hooks/event/useGetEventCategory";
 import { EventCategory } from "@/types/Event/EventCategory";

@@ -1,5 +1,5 @@
-import { useAuth } from "@/context/authContext";
-import Error from "@/pages/error";
+import { useAuth } from "@/context/AuthContext";
+import Error from "@/pages/Error";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const TravelerGuard = () => {

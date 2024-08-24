@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/data/Api";
 import axios from "axios";
 
@@ -10,21 +9,19 @@ type ArticlePayload = {
   tags: string[];
 };
 
-export const useUpdateArticle = () => {
-  const { token } = useAuth();
-
-  const updateArticle = async (
+export const usePostArticle = () => {
+  const token: string | null = localStorage.getItem("token") || null;
+  const postArticle = async (
     onSuccess: () => void,
     onError: () => void,
-    payload: ArticlePayload,
-    articleId: string
+    payload: ArticlePayload
   ) => {
     try {
       if (!token) {
-        throw new Error("Not logged in");
+        throw new Error("Please login to post article");
       }
 
-      await axios.patch(`${API_BASE_URL}/article/${articleId}`, payload, {
+      await axios.post(`${API_BASE_URL}/article`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -37,5 +34,5 @@ export const useUpdateArticle = () => {
     }
   };
 
-  return updateArticle;
+  return postArticle;
 };

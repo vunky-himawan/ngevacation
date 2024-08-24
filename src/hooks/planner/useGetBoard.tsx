@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/data/api";
+import { API_BASE_URL } from "@/data/Api";
 import { Board } from "@/types/Planner/PlannerBoard";
 import axios from "axios";
 

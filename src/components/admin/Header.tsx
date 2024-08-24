@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import { useMediaQuery } from "usehooks-ts";
 import { useEffect, useState } from "react";

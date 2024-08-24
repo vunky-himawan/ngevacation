@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/data/api";
+import { API_BASE_URL } from "@/data/Api";
 import axios from "axios";
 
 type ReplyCommentReplyRequest = {

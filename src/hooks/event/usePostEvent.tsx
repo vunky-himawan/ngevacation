@@ -1,5 +1,5 @@
-import { useAuth } from "@/context/authContext";
-import { API_BASE_URL } from "@/data/api";
+import { useAuth } from "@/context/AuthContext";
+import { API_BASE_URL } from "@/data/Api";
 import axios from "axios";
 
 export const usePostEvent = () => {

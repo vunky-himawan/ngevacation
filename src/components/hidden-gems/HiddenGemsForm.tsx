@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import useValidationHiddenGems from "@/hooks/hidden-gems/useValidationHiddenGems";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { HiddenGemsCategory } from "@/types/HiddenGemsCategory";
 import { useGetCategoriesHiddenGems } from "@/hooks/hidden-gems/useGetCategoriesHiddenGems";
 import { usePostHiddenGems } from "@/hooks/hidden-gems/usePostHiddenGems";

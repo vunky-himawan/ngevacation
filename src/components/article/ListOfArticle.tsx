@@ -4,34 +4,45 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import axios from "axios";
-import { API_BASE_URL } from "@/data/api";
 
 const ListOfArticle = () => {
-  const [articles, setArticles] = useState<Array<Article>>([]);
+  const getArticles = useGetArticles();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [data, setData] = useState<Article[]>([]);
   const [page, setPage] = useState(2);
   const [hasMore, setHasMore] = useState(true);
-  const { articlesData, isLoading } = useGetArticles({});
 
   useEffect(() => {
-    if (articlesData.length > 0) {
-      setArticles(articlesData);
-    }
-  }, [articlesData]);
+    getArticles(
+      (articles: Article[]) => {
+        setData(articles);
+        setIsLoading(false);
+      },
+      () => {
+        console.log("error");
+      },
+      "page=1&limit=10"
+    );
+  }, []);
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = () => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/article?orderBy=updated_at&order=desc&page=${page}&limit=10`
+      const newQuery = `page=${page}&limit=10`;
+
+      getArticles(
+        (articles: Article[]) => {
+          if (articles.length === 0) {
+            setHasMore(false);
+          }
+          setData((prevArticles) => [...prevArticles, ...articles]);
+        },
+        () => {
+          console.log("error");
+        },
+        newQuery
       );
-      const newArticles = response.data.data;
 
-      setArticles((prevArticles) => [...prevArticles, ...newArticles]);
       setPage((prevPage) => prevPage + 1);
-
-      if (newArticles.length === 0) {
-        setHasMore(false);
-      }
     } catch (err) {
       console.error("Failed to fetch more articles:", err);
     }
@@ -46,17 +57,16 @@ const ListOfArticle = () => {
         {isLoading && <h4 style={{ textAlign: "center" }}>Loading...</h4>}
         {!isLoading && (
           <InfiniteScroll
-            dataLength={articles.length}
+            dataLength={data.length}
             next={fetchMoreData}
             loader={<h4 style={{ textAlign: "center" }}>Loading...</h4>}
             hasMore={hasMore}
             scrollThreshold={1}
           >
             <section className="w-full max-w-7xl mx-auto pt-28 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {articles &&
-                articles.map((article: Article) => (
-                  <ArticleCard key={article.article_id} article={article} />
-                ))}
+              {data.map((article: Article) => (
+                <ArticleCard key={article.article_id} article={article} />
+              ))}
             </section>
           </InfiniteScroll>
         )}

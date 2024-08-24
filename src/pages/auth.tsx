@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Toast from "@/components/Toast";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 import { useEffect, useState } from "react";

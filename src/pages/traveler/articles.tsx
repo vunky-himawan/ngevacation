@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/context/AuthContext";
 import { useDeleteArticle } from "@/hooks/article/useDeleteArticle";
 import { useGetArticles } from "@/hooks/article/useGetArticles";
-import useGetUser from "@/hooks/useGetUser";
+import { useGetUser } from "@/hooks/useGetUser";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
 import { Article } from "@/types/Article";
@@ -36,23 +37,42 @@ const SEO: SEOModel = {
 };
 
 const TravelerArticles = () => {
-  const user: User = useGetUser() as User;
+  const { token } = useAuth();
+  const getUser = useGetUser();
+  const [user, setUser] = useState<User | undefined>(undefined);
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">("PUBLISHED");
   const [search, setSearch] = useState("");
-  const { articlesData } = useGetArticles({
-    userId: user?.user_id || "",
-    status: status,
-    search: search,
-  });
-  const [articles, setArticles] = useState<Array<Article>>([]);
+  const getArticles = useGetArticles();
+  const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
-    if (articlesData && user) {
-      setArticles(articlesData);
-    }
-  }, [user, articlesData]);
+    getUser(
+      (data: User) => {
+        setUser(data);
+      },
+      () => {
+        console.log("error");
+      },
+      token as string
+    );
+  }, [token]);
 
-  if (!user || !articles) {
+  useEffect(() => {
+    if (user) {
+      getArticles(
+        (data: Article[]) => {
+          setArticles(data);
+        },
+        () => {
+          console.log("error");
+        },
+        `u=${user.user_id}&s=${search}&stat[]=${status}`,
+        token as string
+      );
+    }
+  }, [user, search, status]);
+
+  if (!user) {
     return <Loading />;
   }
 

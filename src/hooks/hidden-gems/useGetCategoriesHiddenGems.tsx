@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/data/api";
+import { API_BASE_URL } from "@/data/Api";
 import { HiddenGemsCategory } from "@/types/HiddenGemsCategory";
 import axios from "axios";
 

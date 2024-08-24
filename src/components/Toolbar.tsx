@@ -8,8 +8,8 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useCallback } from "react";
 import { Editor } from "@tiptap/core";
 import axios from "axios";
-import { API_BASE_URL } from "@/data/api";
-import { useAuth } from "@/context/authContext";
+import { API_BASE_URL } from "@/data/Api";
+import { useAuth } from "@/context/AuthContext";
 
 const Toolbar = ({ editor }: { editor: Editor }) => {
   const { token } = useAuth();

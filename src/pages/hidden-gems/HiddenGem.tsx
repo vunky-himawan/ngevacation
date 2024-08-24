@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "@/context/AuthContext";
 import { Input } from "@/components/ui/input";
 import { HiddenGemsComment } from "@/types/HiddenGem/HiddenGemComment";
 import { HiddenGemsCommentReplies } from "@/types/HiddenGem/HiddenGemCommentReply";
