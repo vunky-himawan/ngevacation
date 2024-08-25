@@ -39,6 +39,7 @@ const Event = () => {
     getEvent(
       eventId as string,
       (data: EventModel) => {
+        console.log(data);
         setData(data);
         setIsLoading(false);
         SEO.title = data.title;

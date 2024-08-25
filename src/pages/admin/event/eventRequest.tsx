@@ -16,14 +16,15 @@ const EventRequest = () => {
   useEffect(() => {
     getEvent(
       (data: Event[]) => {
+        console.log(data);
         setEvent(data);
         setIsLoading(false);
       },
       () => {
         console.log("error");
       },
-      token as string,
-      "stat[]=PENDING"
+      "stat[]=PENDING",
+      token as string
     );
   }, []);
 
@@ -51,7 +52,7 @@ const Card = ({ event }: { event: Event }) => {
   return (
     <>
       <Link
-        to={`/admin/hidden-gem/detail/${event.event_id}`}
+        to={`/admin/event/detail/${event.event_id}`}
         className="w-full flex flex-col gap-5 rounded-2xl p-5 border h-fit"
       >
         <div className="flex justify-between items-center">

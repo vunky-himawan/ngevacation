@@ -63,6 +63,7 @@ const TravelerEvents = () => {
     if (user) {
       getEvents(
         (data: Event[]) => {
+          console.log(data);
           setEvents(data);
         },
         () => {

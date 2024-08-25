@@ -38,6 +38,7 @@ import TravelerEvents from "@/pages/traveler/event/Events";
 import EventUpdate from "@/pages/traveler/event/UpdateEvent";
 import TravelerHiddenGems from "@/pages/traveler/hiddenGem/HiddenGems";
 import HiddenGemUpdate from "@/pages/traveler/hiddenGem/UpdateHiddenGems";
+import EventDetail from "@/pages/admin/event/EventDetail";
 
 const Router = () => {
   const ArticlePath = [
@@ -178,8 +179,17 @@ const Router = () => {
           element: <DashboardAdmin />,
         },
         {
-          path: "/admin/event/request",
-          element: <EventRequest />,
+          path: "/admin/event",
+          children: [
+            {
+              path: "/admin/event/request",
+              element: <EventRequest />,
+            },
+            {
+              path: "/admin/event/detail/:eventId",
+              element: <EventDetail />,
+            },
+          ],
         },
         {
           path: "/admin/hidden-gem",

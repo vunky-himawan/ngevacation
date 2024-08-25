@@ -13,22 +13,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/AuthContext";
-import { useApprove } from "@/hooks/hidden-gems/useApprove";
-import { useGetHiddenGemById } from "@/hooks/hidden-gems/useGetHiddenGemById";
-import { useReject } from "@/hooks/hidden-gems/useReject";
+import { useApprove } from "@/hooks/event/useApprove";
+import { useGetEvent } from "@/hooks/event/useGetEvent";
+import { useReject } from "@/hooks/event/useReject";
 import AdminLayout from "@/layouts/AdminLayout";
-import { HiddenGemsOperationDay } from "@/types/HiddenGem/HiddenGemOperationDay";
-import { HiddenGem } from "@/types/HiddenGem/HiddenGems";
+import { Event } from "@/types/Event/Event";
+import { EventOperationalDay } from "@/types/Event/EventOperationalDay";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const HiddenGemsDetail = () => {
-  const { hiddenGemId } = useParams<{ hiddenGemId: string }>();
+const EventDetail = () => {
+  const { eventId } = useParams<{ eventId: string }>();
   const { token } = useAuth();
-  const getData = useGetHiddenGemById();
-  const [hiddenGem, setHiddenGem] = useState<HiddenGem | undefined>(undefined);
+  const getData = useGetEvent();
+  const [event, setEvent] = useState<Event | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
   const reject = useReject();
@@ -37,9 +37,9 @@ const HiddenGemsDetail = () => {
 
   useEffect(() => {
     getData(
-      hiddenGemId as string,
-      (data: HiddenGem) => {
-        setHiddenGem(data);
+      eventId as string,
+      (data: Event) => {
+        setEvent(data);
         setIsLoading(false);
       },
       () => {
@@ -58,7 +58,7 @@ const HiddenGemsDetail = () => {
           description: "Your message has been successfully posted.",
           duration: 2000,
         });
-        navigate("/admin/hidden-gem/request");
+        navigate("/admin/event/request");
       },
       onError: () => {
         toast({
@@ -69,7 +69,7 @@ const HiddenGemsDetail = () => {
       },
       token: token as string,
       message: message,
-      hiddenGemId: hiddenGemId as string,
+      eventId: eventId as string,
     });
     setMessage("");
   };
@@ -82,7 +82,8 @@ const HiddenGemsDetail = () => {
           description: "Your message has been successfully posted.",
           duration: 2000,
         });
-        navigate("/admin/hidden-gem/request");
+
+        navigate("/admin/event/request");
       },
       onError: () => {
         toast({
@@ -92,7 +93,7 @@ const HiddenGemsDetail = () => {
         });
       },
       token: token as string,
-      hiddenGemId: hiddenGemId as string,
+      eventId: eventId as string,
     });
   };
 
@@ -112,7 +113,7 @@ const HiddenGemsDetail = () => {
             <Skeleton className="w-full h-[1rem] relative flex justify-center items-center rounded-3xl" />
           </div>
         )}
-        {!isLoading && hiddenGem && (
+        {!isLoading && event && (
           <>
             <Swiper
               slidesPerView={1}
@@ -124,90 +125,50 @@ const HiddenGemsDetail = () => {
               modules={[Autoplay]}
               className="w-full h-[50vh] relative flex justify-center items-center rounded-3xl"
             >
-              {hiddenGem?.photos.map((photo: string, index: number) => (
+              {event?.photos.map((photo: string, index: number) => (
                 <SwiperSlide
                   key={index}
                   className="border h-full bg-black/30 !flex !justify-center !items-center w-full rounded-3xl overflow-hidden"
                 >
                   <img
                     src={photo}
-                    alt={hiddenGem?.title}
+                    alt={event?.title}
                     className="w-full h-full object-cover absolute top-0 left-0"
                   />
                 </SwiperSlide>
               ))}
             </Swiper>
             <h1 className="font-cabinet font-semibold text-5xl">
-              {hiddenGem?.title}
+              {event?.title}
             </h1>
             <div className="flex flex-col md:flex-row justify-between md:items-center max-md:gap-3">
               <div className="flex gap-5 items-center">
                 <Avatar>
                   <AvatarImage
-                    src={hiddenGem?.user.profile}
-                    alt={hiddenGem?.user.fullname}
+                    src={event?.user.profile}
+                    alt={event?.user.fullname}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                by {hiddenGem?.user.username}
+                by {event?.user.username}
               </div>
-              {hiddenGem?.created_at && (
+              {event?.created_at && (
                 <div>
-                  Uploaded at {new Date(hiddenGem.created_at).toDateString()}
+                  Uploaded at {new Date(event.created_at).toDateString()}
                 </div>
               )}
             </div>
             <Badge className="w-fit p-2 rounded-full bg-orange-500">
-              {hiddenGem?.category.category_name}
+              {event?.category.category_name}
             </Badge>
-            <div className="flex gap-3">
-              <div className="flex">
-                <div
-                  className={`icon-[iconamoon--star-fill] w-5 h-5 ${
-                    hiddenGem && hiddenGem?.rating >= 1
-                      ? "bg-yellow-500"
-                      : "bg-gray-300"
-                  }`}
-                />
-                <div
-                  className={`icon-[iconamoon--star-fill] w-5 h-5 ${
-                    hiddenGem && hiddenGem?.rating >= 2
-                      ? "bg-yellow-500"
-                      : "bg-gray-300"
-                  }`}
-                />
-                <div
-                  className={`icon-[iconamoon--star-fill] w-5 h-5 ${
-                    hiddenGem && hiddenGem?.rating >= 3
-                      ? "bg-yellow-500"
-                      : "bg-gray-300"
-                  }`}
-                />
-                <div
-                  className={`icon-[iconamoon--star-fill] w-5 h-5 ${
-                    hiddenGem && hiddenGem?.rating >= 4
-                      ? "bg-yellow-500"
-                      : "bg-gray-300"
-                  }`}
-                />
-                <div
-                  className={`icon-[iconamoon--star-fill] w-5 h-5 ${
-                    hiddenGem && hiddenGem?.rating >= 5
-                      ? "bg-yellow-500"
-                      : "bg-gray-300"
-                  }`}
-                />
-              </div>
-              <p className="">{hiddenGem?.rating.toFixed(1)}</p>
-            </div>
             <p className="text-md">
               Range Price :{" "}
-              {hiddenGem?.price_start.toLocaleString("id-ID", {
+              {event?.price_start.toLocaleString("id-ID", {
                 style: "currency",
                 currency: "IDR",
               })}{" "}
               -{" "}
-              {hiddenGem?.price_end.toLocaleString("id-ID", {
+              {event?.price_end.toLocaleString("id-ID", {
                 style: "currency",
                 currency: "IDR",
               })}
@@ -216,11 +177,11 @@ const HiddenGemsDetail = () => {
               <h1 className="text-xl font-semibold">Operational Days</h1>
               <div className="overflow-auto">
                 <div className="flex gap-5 w-max mt-3">
-                  {hiddenGem?.operation_days.map(
-                    (operational: HiddenGemsOperationDay) => (
+                  {event?.operation_days.map(
+                    (operational: EventOperationalDay, index: number) => (
                       <OperationalDayCard
-                        key={operational.day}
-                        day={operational.day}
+                        key={index}
+                        day={new Date(operational.date).toDateString()}
                         openingTime={new Date(operational.open_time)}
                         closingTime={new Date(operational.close_time)}
                       />
@@ -231,7 +192,7 @@ const HiddenGemsDetail = () => {
             </div>
             <div>
               <h1 className="text-xl font-semibold">Description</h1>
-              <p>{hiddenGem?.description}</p>
+              <p>{event?.description}</p>
             </div>
             <div className="flex gap-5 justify-end">
               <Dialog>
@@ -303,9 +264,7 @@ const OperationalDayCard = ({
         <div className="flex justify-between items-center">
           <div>
             <h1>Day</h1>
-            <p className="text-md font-semibold">
-              {day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()}
-            </p>
+            <p className="text-md font-semibold">{day}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-5">
@@ -335,4 +294,4 @@ const OperationalDayCard = ({
   );
 };
 
-export default HiddenGemsDetail;
+export default EventDetail;
