@@ -203,7 +203,7 @@ const AuthMenu = ({
               Write
             </span>
           </Link>
-          <Link to={`/traveler/create/event`} className="text-black">
+          <Link to={`/event/post`} className="text-black">
             <span className="flex items-center gap-5">
               <div className="icon-[iconamoon--ticket-thin] w-6 h-6" />
               Create Event

@@ -10,18 +10,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { useDeleteArticle } from "@/hooks/article/useDeleteArticle";
-import { useGetArticles } from "@/hooks/article/useGetArticles";
+import { useDeleteEvent } from "@/hooks/event/useDeleteEvent";
+import { useGetEvents } from "@/hooks/event/useGetEvents";
 import { useGetUser } from "@/hooks/useGetUser";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
-import { Article } from "@/types/Article";
+import { Event } from "@/types/Event/Event";
 import { User } from "@/types/User";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const SEO: SEOModel = {
-  title: "Articles",
+  title: "Events",
   description:
     "Explore a variety of captivating articles that uncover hidden destinations and unique experiences for travelers. Find inspiration for your next journey on Hidden Gems.",
   siteName: "Hidden Gems",
@@ -36,14 +36,16 @@ const SEO: SEOModel = {
   type: "website",
 };
 
-const TravelerArticles = () => {
+const TravelerEvents = () => {
   const { token } = useAuth();
   const getUser = useGetUser();
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">("PUBLISHED");
+  const [status, setStatus] = useState<
+    "PENDING" | "REVISION" | "REJECT" | "APPROVE"
+  >("APPROVE");
   const [search, setSearch] = useState("");
-  const getArticles = useGetArticles();
-  const [articles, setArticles] = useState<Article[]>([]);
+  const getEvents = useGetEvents();
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     getUser(
@@ -59,9 +61,9 @@ const TravelerArticles = () => {
 
   useEffect(() => {
     if (user) {
-      getArticles(
-        (data: Article[]) => {
-          setArticles(data);
+      getEvents(
+        (data: Event[]) => {
+          setEvents(data);
         },
         () => {
           console.log("error");
@@ -83,49 +85,65 @@ const TravelerArticles = () => {
           <div className="flex flex-col gap-5">
             <div className="flex justify-between items-center">
               <h1 className="font-cabinet font-semibold text-5xl">
-                Your Articles
+                Your Events
               </h1>
-              <Link to={"/traveler/write"}>
+              <Link to={"/event/post"}>
                 <Button className="bg-orange-500 rounded-full hover:bg-orange-400">
-                  Write Article
+                  Create Event
                 </Button>
               </Link>
             </div>
             <div className="flex justify-between items-center">
               <div className="flex gap-5 items-center">
                 <button
-                  onClick={() => setStatus("PUBLISHED")}
+                  onClick={() => setStatus("APPROVE")}
                   className={`p-3 ${
-                    status === "PUBLISHED" ? "border-b border-black" : ""
+                    status === "APPROVE" ? "border-b border-black" : ""
                   }`}
                 >
-                  Publised
+                  Approved
                 </button>
                 <button
-                  onClick={() => setStatus("DRAFT")}
+                  onClick={() => setStatus("PENDING")}
                   className={`p-3 ${
-                    status === "DRAFT" ? "border-b border-black" : ""
+                    status === "PENDING" ? "border-b border-black" : ""
                   }`}
                 >
-                  Draft
+                  Pending
+                </button>
+                <button
+                  onClick={() => setStatus("REVISION")}
+                  className={`p-3 ${
+                    status === "REVISION" ? "border-b border-black" : ""
+                  }`}
+                >
+                  Revision
+                </button>
+                <button
+                  onClick={() => setStatus("REJECT")}
+                  className={`p-3 ${
+                    status === "REJECT" ? "border-b border-black" : ""
+                  }`}
+                >
+                  Reject
                 </button>
               </div>
               <Input
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
-                placeholder="Search Articles"
+                placeholder="Search Events"
                 className="w-[20rem]"
               />
             </div>
             <div className="flex flex-col gap-5 mt-5">
-              {articles.length === 0 && (
-                <p className="text-center text-gray-500">No articles found</p>
+              {events.length === 0 && (
+                <p className="text-center text-gray-500">No events found</p>
               )}
-              {articles.map((article: Article) => (
+              {events.map((event: Event) => (
                 <Card
-                  key={article.article_id}
-                  article={article}
-                  setArticles={setArticles}
+                  key={event.event_id}
+                  event={event}
+                  setEvents={setEvents}
                 />
               ))}
             </div>
@@ -137,64 +155,55 @@ const TravelerArticles = () => {
 };
 
 const Card = ({
-  article,
-  setArticles,
+  event,
+  setEvents,
 }: {
-  article: Article;
-  setArticles: React.Dispatch<React.SetStateAction<Array<Article>>>;
+  event: Event;
+  setEvents: React.Dispatch<React.SetStateAction<Array<Event>>>;
 }) => {
-  const del = useDeleteArticle(article.article_id);
+  const { token } = useAuth();
+  const deleteEvent = useDeleteEvent();
 
   const handleDelete = () => {
-    del({
-      onSuccess: () =>
-        setArticles((prev) =>
-          prev.filter(
-            (prevArticle) => prevArticle.article_id !== article.article_id
-          )
-        ),
+    deleteEvent({
+      onSuccess() {
+        setEvents((prev) =>
+          prev.filter((prevArticle) => prevArticle.event_id !== event.event_id)
+        );
+      },
+      onError() {
+        console.log("error");
+      },
+      eventId: event.event_id,
+      token: token as string,
     });
   };
 
   return (
     <>
       <div className="flex flex-col md:flex-row gap-5 pb-5 border-b">
-        <Link to={`/article/${article.article_id}`}>
+        <Link to={`/event/${event.event_id}`}>
           <div className="w-full lg:max-w-[200px] md:max-w-[200px] md:max-h-[130px]">
             <img
-              src={article.cover}
+              src={event.photos[0]}
               alt=""
               className="w-full h-full object-cover"
             />
           </div>
         </Link>
-        <div className="flex flex-col gap-2">
-          <Link to={`/article/${article.article_id}`}>
-            <h1 className="font-cabinet text-2xl font-semibold">
-              {article.title}
-            </h1>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
-              saepe eos unde, ea vitae accusantium doloribus? Minus ut quibusdam
-              quae!
+        <div className="flex flex-col gap-2 justify-between">
+          <div className="flex flex-col gap-2">
+            <Link to={`/event/${event.event_id}`}>
+              <h1 className="font-cabinet text-2xl font-semibold">
+                {event.title}
+              </h1>
+              <p>{event.description.substring(0, 100)}...</p>
+            </Link>
+            <p className="text-left text-sm">
+              {new Date(event.created_at).toDateString()}
             </p>
-          </Link>
-          <p className="text-left text-sm">
-            {new Date(article.created_at).toDateString()}
-          </p>
+          </div>
           <div className="flex gap-8 items-center">
-            <div className="flex gap-2 items-center">
-              <span className="icon-[ion--sparkles-outline] w-5 h-5"></span>
-              <span>{article.count_likes}</span>
-            </div>
-            <div className="flex gap-2 items-center">
-              <span className="icon-[iconamoon--bookmark-light] w-5 h-5"></span>
-              <span>{article.count_bookmarks}</span>
-            </div>
-            <div className="flex gap-2 items-center">
-              <span className="icon-[iconamoon--comment-dots-light] w-5 h-5"></span>
-              <span>{article.count_comments}</span>
-            </div>
             <DropdownMenu>
               <div className="flex gap-2 items-center cursor-pointer">
                 <DropdownMenuTrigger asChild>
@@ -204,14 +213,16 @@ const Card = ({
               <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link
-                    to={`/traveler/article/${article.article_id}/edit`}
-                    className="w-full p-1 text-left"
-                  >
-                    Edit
-                  </Link>
-                </DropdownMenuItem>
+                {event.status === "APPROVE" && (
+                  <DropdownMenuItem>
+                    <Link
+                      to={`/traveler/event/${event.event_id}/edit`}
+                      className="w-full p-1 text-left"
+                    >
+                      Edit
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem>
                   <button
                     type="button"
@@ -229,4 +240,4 @@ const Card = ({
     </>
   );
 };
-export default TravelerArticles;
+export default TravelerEvents;

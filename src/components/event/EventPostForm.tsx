@@ -19,6 +19,8 @@ import useValidationEvent from "@/hooks/event/useValidationEvent";
 import { EventOperationalDay } from "@/types/Event/EventOperationalDay";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { Event } from "@/types/Event/Event";
+import { useUpdateEvent } from "@/hooks/event/useUpdateEvent";
 
 type ErrorEvent = {
   title: string;
@@ -30,30 +32,45 @@ type ErrorEvent = {
   category: string;
 };
 
-const EventForm = () => {
+const EventForm = ({
+  data,
+  isEdit = false,
+}: {
+  data?: Event;
+  isEdit?: boolean;
+}) => {
   const { user } = useAuth();
   const [slide, setSlide] = useState(0);
-  const [cover, setCover] = useState<string>("");
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("");
-  const [operationalDays, setOperationalDays] = useState<EventOperationalDay[]>(
-    []
+  const [cover, setCover] = useState<string>(data?.photos[0] ?? "");
+  const [photos, setPhotos] = useState<string[]>(
+    data?.photos.slice(1, data?.photos.length) ?? []
   );
-  const [description, setDescription] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [lowestPrice, setLowestPrice] = useState<number>(0);
-  const [highestPrice, setHighestPrice] = useState<number>(0);
+  const [title, setTitle] = useState<string>(data?.title ?? "");
+  const [operationalDays, setOperationalDays] = useState<EventOperationalDay[]>(
+    data?.operation_days ?? []
+  );
+  const [description, setDescription] = useState<string>(
+    data?.description ?? ""
+  );
+  const [address, setAddress] = useState<string>(data?.location ?? "");
+  const [lowestPrice, setLowestPrice] = useState<number>(
+    data?.price_start ?? 0
+  );
+  const [highestPrice, setHighestPrice] = useState<number>(
+    data?.price_end ?? 0
+  );
   const [categories, setCategories] = useState<EventCategory[]>([]);
   const [categorySelected, setCategorySelected] = useState<{
     category_id: string;
     category_name: string;
-  }>({} as { category_id: string; category_name: string });
-  const formRef = useRef<HTMLFormElement>(null);
+  }>(data?.category ?? ({} as { category_id: string; category_name: string }));
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [error, setError] = useState<ErrorEvent>({} as ErrorEvent);
   const [isOnPost, setIsOnPost] = useState<boolean>(false);
   const validation = useValidationEvent();
   const getCategories = useGetEventCategory();
   const postEvent = usePostEvent();
+  const updateEvent = useUpdateEvent();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,7 +110,46 @@ const EventForm = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  async function urlToFile(url: string, filename: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], filename, { type: blob.type });
+    return file;
+  }
+
+  const buildFormData = async (): Promise<FormData> => {
+    const formData = new FormData(formRef.current);
+    if (formData.get("photos")?.name === "" && cover !== "") {
+      const coverFile = await urlToFile(cover, "cover.jpg");
+      formData.append("photos", coverFile);
+      for (let i = 0; i < photos.length; i++) {
+        const photoFile = await urlToFile(photos[i], `photo_${i}.jpg`);
+        formData.append("photos", photoFile);
+      }
+    }
+    formData.append("title", title);
+    formData.append("price_start", lowestPrice.toString());
+    formData.append("price_end", highestPrice.toString());
+    formData.append("description", description);
+    formData.append("location", address);
+    formData.append("rating", "0");
+    formData.append("user_id", user?.user_id as string);
+    formData.append("category_id", categorySelected.category_id);
+    operationalDays.forEach((operationalDay, index) => {
+      formData.append(`operation_days[${index}][date]`, operationalDay.date);
+      formData.append(
+        `operation_days[${index}][open_time]`,
+        operationalDay.open_time
+      );
+      formData.append(
+        `operation_days[${index}][close_time]`,
+        operationalDay.close_time
+      );
+    });
+    return formData;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
       error.title === "" &&
@@ -104,57 +160,58 @@ const EventForm = () => {
       error.operationalDays === "" &&
       formRef.current
     ) {
-      const formData: FormData = new FormData(formRef.current);
-
-      formData.append("title", title);
-      formData.append("price_start", lowestPrice.toString());
-      formData.append("price_end", highestPrice.toString());
-      formData.append("description", description);
-      formData.append("location", address);
-      formData.append("rating", "0");
-      formData.append("user_id", user?.user_id as string);
-      formData.append("category_id", categorySelected.category_id);
-      operationalDays.forEach(
-        (operationalDay: EventOperationalDay, index: number) => {
-          formData.append(
-            `operation_days[${index}][date]`,
-            operationalDay.date
-          );
-          formData.append(
-            `operation_days[${index}][open_time]`,
-            operationalDay.open_time
-          );
-          formData.append(
-            `operation_days[${index}][close_time]`,
-            operationalDay.close_time
-          );
-        }
-      );
+      const formData = await buildFormData();
 
       setIsOnPost(true);
 
-      postEvent(
-        () => {
-          toast({
-            title: "Success",
-            className: "bg-green-500 text-white",
-            description:
-              "Hidden Gems created successfully, please wait for approval",
-            duration: 2000,
-          });
-          navigate("/events");
-        },
-        () => {
-          setIsOnPost(false);
-          toast({
-            title: "Error",
-            className: "bg-red-500 text-white",
-            description: "An unexpected error occurred",
-            duration: 2000,
-          });
-        },
-        formData
-      );
+      if (isEdit) {
+        updateEvent(
+          () => {
+            toast({
+              title: "Success",
+              className: "bg-green-500 text-white",
+              description:
+                "Hidden Gems updated successfully, please wait for approval",
+              duration: 2000,
+            });
+            navigate("/traveler/events");
+          },
+          () => {
+            setIsOnPost(false);
+            toast({
+              title: "Error",
+              className: "bg-red-500 text-white",
+              description: "An unexpected error occurred",
+              duration: 2000,
+            });
+          },
+          data?.event_id as string,
+          formData
+        );
+      } else {
+        postEvent(
+          () => {
+            toast({
+              title: "Success",
+              className: "bg-green-500 text-white",
+              description:
+                "Hidden Gems created successfully, please wait for approval",
+              duration: 2000,
+            });
+            navigate("/events");
+          },
+          () => {
+            setIsOnPost(false);
+            toast({
+              title: "Error",
+              className: "bg-red-500 text-white",
+              description: "An unexpected error occurred",
+              duration: 2000,
+            });
+          },
+          formData
+        );
+      }
     }
   };
 
@@ -227,14 +284,15 @@ const EventForm = () => {
         className="pt-32 pb-5 max-md:pt-24 min-w-screen max-w-7xl mx-auto grid gap-5 px-5 w-full"
       >
         <input
+          accept="image/*"
           type="file"
           id="cover-photo"
           name="photos"
           hidden
           onChange={handleAddCover}
-          required
         />
         <input
+          accept="image/*"
           type="file"
           id="event-photos"
           name="photos"
@@ -248,6 +306,7 @@ const EventForm = () => {
             cover={cover}
             setPhotos={setPhotos}
             error={error}
+            formRef={formRef}
           />
         )}
         {slide === 1 && (
@@ -300,7 +359,7 @@ const EventForm = () => {
                 {isOnPost && (
                   <span className="icon-[svg-spinners--tadpole] mr-5"></span>
                 )}{" "}
-                Submit
+                {isEdit ? "Update" : "Submit"}
               </Button>
             ) : (
               <Button
