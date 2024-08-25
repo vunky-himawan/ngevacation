@@ -17,6 +17,9 @@ import { useGetCategoriesHiddenGems } from "@/hooks/hidden-gems/useGetCategories
 import { usePostHiddenGems } from "@/hooks/hidden-gems/usePostHiddenGems";
 import { toast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { HiddenGem } from "@/types/HiddenGem/HiddenGems";
+import { useUpdateHiddenGem } from "@/hooks/hidden-gems/useUpdateHiddenGem";
+import { HiddenGemsOperationDay } from "@/types/HiddenGem/HiddenGemOperationDay";
 
 type Day = {
   index: number;
@@ -39,28 +42,67 @@ type ErrorHiddenGems = {
   category: string;
 };
 
-const HiddenGemsForm = () => {
+const HiddenGemsForm = ({
+  data,
+  isEdit = false,
+}: {
+  data?: HiddenGem;
+  isEdit?: boolean;
+}) => {
   const { user } = useAuth();
   const [slide, setSlide] = useState(0);
-  const [cover, setCover] = useState<string>("");
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("");
+  const [cover, setCover] = useState<string>(data?.photos[0] ?? "");
+  const [photos, setPhotos] = useState<string[]>(
+    data?.photos.slice(1, data?.photos.length) ?? []
+  );
+  const [title, setTitle] = useState<string>(data?.title ?? "");
   const [operationalDays, setOperationalDays] = useState<OperationalDay[]>([]);
-  const [description, setDescription] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [lowestPrice, setLowestPrice] = useState<number>(0);
-  const [highestPrice, setHighestPrice] = useState<number>(0);
+  const [description, setDescription] = useState<string>(
+    data?.description ?? ""
+  );
+  const [address, setAddress] = useState<string>(data?.location ?? "");
+  const [lowestPrice, setLowestPrice] = useState<number>(
+    data?.price_start ?? 0
+  );
+  const [highestPrice, setHighestPrice] = useState<number>(
+    data?.price_end ?? 0
+  );
   const [categories, setCategories] = useState<HiddenGemsCategory[]>([]);
   const [categorySelected, setCategorySelected] = useState<{
     category_id: string;
     category_name: string;
-  }>({} as { category_id: string; category_name: string });
+  }>(data?.category ?? ({} as { category_id: string; category_name: string }));
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<ErrorHiddenGems>({} as ErrorHiddenGems);
   const validation = useValidationHiddenGems();
   const getCategories = useGetCategoriesHiddenGems();
   const postHiddenGem = usePostHiddenGems();
+  const updateHiddenGem = useUpdateHiddenGem();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (data) {
+      data.operation_days.forEach(
+        (operationDay: HiddenGemsOperationDay, index: number) => {
+          const day = {
+            index: index,
+            name: operationDay.day,
+          };
+
+          const operationalDay = {
+            day: day,
+            openingTime: new Date(operationDay.open_time),
+            closingTime: new Date(operationDay.close_time),
+          };
+
+          setOperationalDays((prevOperationalDays) => [
+            ...prevOperationalDays,
+            operationalDay,
+          ]);
+        }
+      );
+    }
+  }, [data]);
 
   useEffect(() => {
     getCategories(
@@ -99,7 +141,49 @@ const HiddenGemsForm = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  async function urlToFile(url: string, filename: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], filename, { type: blob.type });
+    return file;
+  }
+
+  const buildFormData = async (): Promise<FormData> => {
+    const formData = new FormData(formRef.current);
+    if (formData.get("photos")?.name === "" && cover !== "") {
+      const coverFile = await urlToFile(cover, "cover.jpg");
+      formData.append("photos", coverFile);
+      for (let i = 0; i < photos.length; i++) {
+        const photoFile = await urlToFile(photos[i], `photo_${i}.jpg`);
+        formData.append("photos", photoFile);
+      }
+    }
+    formData.append("title", title);
+    formData.append("price_start", lowestPrice.toString());
+    formData.append("price_end", highestPrice.toString());
+    formData.append("description", description);
+    formData.append("location", address);
+    formData.append("rating", "0");
+    formData.append("user_id", user?.user_id as string);
+    formData.append("category_id", categorySelected.category_id);
+    operationalDays.forEach((operationalDay: OperationalDay, index: number) => {
+      formData.append(
+        `operation_days[${index}][day]`,
+        operationalDay.day.name.toUpperCase()
+      );
+      formData.append(
+        `operation_days[${index}][open_time]`,
+        operationalDay.openingTime.toISOString()
+      );
+      formData.append(
+        `operation_days[${index}][close_time]`,
+        operationalDay.closingTime.toISOString()
+      );
+    });
+    return formData;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
       error.title === "" &&
@@ -110,54 +194,53 @@ const HiddenGemsForm = () => {
       error.operationalDays === "" &&
       formRef.current
     ) {
-      const formData: FormData = new FormData(formRef.current);
+      const formData = await buildFormData();
 
-      formData.append("title", title);
-      formData.append("price_start", lowestPrice.toString());
-      formData.append("price_end", highestPrice.toString());
-      formData.append("description", description);
-      formData.append("location", address);
-      formData.append("rating", "0");
-      formData.append("user_id", user?.user_id as string);
-      formData.append("category_id", categorySelected.category_id);
-      operationalDays.forEach(
-        (operationalDay: OperationalDay, index: number) => {
-          formData.append(
-            `operation_days[${index}][day]`,
-            operationalDay.day.name.toUpperCase()
-          );
-          formData.append(
-            `operation_days[${index}][open_time]`,
-            operationalDay.openingTime.toISOString()
-          );
-          formData.append(
-            `operation_days[${index}][close_time]`,
-            operationalDay.closingTime.toISOString()
-          );
-        }
-      );
-
-      postHiddenGem(
-        () => {
-          toast({
-            title: "Success",
-            className: "bg-green-500 text-white",
-            description:
-              "Hidden Gems created successfully, please wait for approval",
-            duration: 2000,
-          });
-          navigate("/hidden-gems");
-        },
-        () => {
-          toast({
-            title: "Error",
-            className: "bg-red-500 text-white",
-            description: "An unexpected error occurred",
-            duration: 2000,
-          });
-        },
-        formData
-      );
+      if (isEdit) {
+        updateHiddenGem(
+          () => {
+            toast({
+              title: "Success",
+              className: "bg-green-500 text-white",
+              description: "Hidden Gems updated successfully",
+              duration: 2000,
+            });
+            navigate("/hidden-gems");
+          },
+          () => {
+            toast({
+              title: "Error",
+              className: "bg-red-500 text-white",
+              description: "An unexpected error occurred",
+              duration: 2000,
+            });
+          },
+          data?.hidden_gem_id as string,
+          formData
+        );
+      } else {
+        postHiddenGem(
+          () => {
+            toast({
+              title: "Success",
+              className: "bg-green-500 text-white",
+              description:
+                "Hidden Gems created successfully, please wait for approval",
+              duration: 2000,
+            });
+            navigate("/hidden-gems");
+          },
+          () => {
+            toast({
+              title: "Error",
+              className: "bg-red-500 text-white",
+              description: "An unexpected error occurred",
+              duration: 2000,
+            });
+          },
+          formData
+        );
+      }
     }
   };
 
@@ -235,7 +318,6 @@ const HiddenGemsForm = () => {
           name="photos"
           hidden
           onChange={handleAddCover}
-          required
         />
         <input
           type="file"
@@ -549,19 +631,27 @@ const OperationalForm = ({
   setOperationalDays: React.Dispatch<React.SetStateAction<OperationalDay[]>>;
 }) => {
   const [days, setDays] = useState<Day[]>([
-    { index: 0, name: "Sunday" },
-    { index: 1, name: "Monday" },
-    { index: 2, name: "Tuesday" },
-    { index: 3, name: "Wednesday" },
-    { index: 4, name: "Thursday" },
-    { index: 5, name: "Friday" },
-    { index: 6, name: "Saturday" },
+    { index: 0, name: "SUNDAY" },
+    { index: 1, name: "MONDAY" },
+    { index: 2, name: "TUESDAY" },
+    { index: 3, name: "WEDNESDAY" },
+    { index: 4, name: "THURSDAY" },
+    { index: 5, name: "FRIDAY" },
+    { index: 6, name: "SATURDAY" },
   ]);
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const [openingTime, setOpeningTime] = useState<Date | null>(null);
   const [closingTime, setClosingTime] = useState<Date | null>(null);
   const [disabledAddDay, setDisabledAddDay] = useState<boolean>(true);
   const validation = useValidationHiddenGems();
+
+  useEffect(() => {
+    operationalDays.forEach((operationalDay: OperationalDay, index: number) => {
+      setDays((prev) =>
+        prev.filter((day) => day.name !== operationalDay.day.name)
+      );
+    });
+  }, [operationalDays]);
 
   const handleSelectDay = (day: Day) => {
     setSelectedDay(day);
@@ -724,7 +814,10 @@ const CardResultOperationalDay = ({
         <div className="flex justify-between items-center">
           <div>
             <h1>Day</h1>
-            <p className="text-md font-semibold">{operationalDay.day.name}</p>
+            <p className="text-md font-semibold capitalize">
+              {operationalDay.day.name.charAt(0).toUpperCase() +
+                operationalDay.day.name.slice(1).toLowerCase()}
+            </p>
           </div>
           <Button
             onClick={() => handleDeleteOperationalDay(index)}

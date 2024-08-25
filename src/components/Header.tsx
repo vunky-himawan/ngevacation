@@ -216,6 +216,12 @@ const AuthMenu = ({
               Your Articles
             </span>
           </Link>
+          <Link to={`/traveler/hidden-gems`} className="text-black">
+            <span className="flex items-center gap-5">
+              <span className="icon-[mdi--mountain] w-6 h-6"></span>
+              Your Hidden Gems
+            </span>
+          </Link>
           <Link to={`/traveler/events`} className="text-black">
             <span className="flex items-center gap-5">
               <div className="icon-[iconamoon--star-thin] w-6 h-6" />

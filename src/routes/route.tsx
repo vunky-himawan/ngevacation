@@ -36,6 +36,8 @@ import EventSearchResult from "@/pages/event/EventSearchResult";
 import Event from "@/pages/event/Event";
 import TravelerEvents from "@/pages/traveler/event/Events";
 import EventUpdate from "@/pages/traveler/event/UpdateEvent";
+import TravelerHiddenGems from "@/pages/traveler/hiddenGem/HiddenGems";
+import HiddenGemUpdate from "@/pages/traveler/hiddenGem/UpdateHiddenGems";
 
 const Router = () => {
   const ArticlePath = [
@@ -218,6 +220,10 @@ const Router = () => {
           element: <TravelerEvents />,
         },
         {
+          path: "/traveler/hidden-gems",
+          element: <TravelerHiddenGems />,
+        },
+        {
           path: "/traveler",
           children: [
             {
@@ -234,14 +240,14 @@ const Router = () => {
               element: <EventUpdate />,
             },
             {
+              path: "/traveler/hidden-gem/:hiddenGemId/edit",
+              element: <HiddenGemUpdate />,
+            },
+            {
               path: "/traveler/planner/:planId",
               element: <PlannerDetail />,
             },
           ],
-        },
-        {
-          path: "/traveler/create/event",
-          element: <div>Create Event</div>,
         },
       ],
     },
