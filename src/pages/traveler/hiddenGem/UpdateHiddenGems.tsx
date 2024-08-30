@@ -1,12 +1,9 @@
-import EventForm from "@/components/event/EventPostForm";
 import HiddenGemsForm from "@/components/hidden-gems/HiddenGemsForm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
-import { useGetEvent } from "@/hooks/event/useGetEvent";
 import { useGetHiddenGemById } from "@/hooks/hidden-gems/useGetHiddenGemById";
 import MainLayout from "@/layouts/MainLayout";
 import { SEOModel } from "@/models/SEO";
-import { Event } from "@/types/Event/Event";
 import { HiddenGem } from "@/types/HiddenGem/HiddenGems";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";

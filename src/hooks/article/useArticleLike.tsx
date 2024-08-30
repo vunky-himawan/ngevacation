@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 import { useNavigate } from "react-router-dom";
 
 export const useArticleLike = (
@@ -7,6 +7,7 @@ export const useArticleLike = (
   token: string | undefined
 ) => {
   const navigate = useNavigate();
+  const axiosInstance = RefreshToken();
 
   const likeArticle = async () => {
     if (!token) {
@@ -15,11 +16,15 @@ export const useArticleLike = (
     }
 
     try {
-      await axios.patch(`${API_BASE_URL}/article/${articleId}/like`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.patch(
+        `${API_BASE_URL}/article/${articleId}/like`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error("Failed to like the article:", error);
     }

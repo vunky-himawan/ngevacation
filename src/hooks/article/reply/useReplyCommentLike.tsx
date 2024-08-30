@@ -1,24 +1,34 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
+import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 
-export const useReplyCommentLike = (
-  articleId: string,
-  parentId: string,
-  token: string | undefined,
-  replyId: string
-) => {
-  const navigate = useNavigate();
+type CommentRequest = {
+  articleId: string;
+  parentId: string;
+  replyId: string;
+};
 
-  const likeReply = async () => {
+type LikeCommentParams = {
+  onSuccess: () => void;
+  onError: (message: string) => void;
+  data: CommentRequest;
+};
+
+export const useReplyCommentLike = () => {
+  const token = localStorage.getItem("X-Access-Token");
+  const navigate = useNavigate();
+  const axiosInstance = RefreshToken();
+
+  const likeReply = async ({ onSuccess, onError, data }: LikeCommentParams) => {
     if (!token) {
       navigate("/auth/login");
       return;
     }
 
     try {
-      await axios.patch(
-        `${API_BASE_URL}/article/${articleId}/comment/${parentId}/reply/${replyId}/like`,
+      await axiosInstance.patch(
+        `${API_BASE_URL}/article/${data.articleId}/comment/${data.parentId}/reply/${data.replyId}/like`,
         null,
         {
           headers: {
@@ -26,8 +36,12 @@ export const useReplyCommentLike = (
           },
         }
       );
+
+      onSuccess();
     } catch (error) {
-      console.error("Failed to like the article:", error);
+      if (error instanceof AxiosError) {
+        onError(error.response?.data.message);
+      }
     }
   };
 

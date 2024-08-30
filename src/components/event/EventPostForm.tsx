@@ -118,8 +118,14 @@ const EventForm = ({
   }
 
   const buildFormData = async (): Promise<FormData> => {
-    const formData = new FormData(formRef.current);
-    if (formData.get("photos")?.name === "" && cover !== "") {
+    const formData = new FormData(formRef.current!);
+    const photosInput = formData.get("photos");
+
+    if (
+      photosInput instanceof File &&
+      photosInput.name === "" &&
+      cover !== ""
+    ) {
       const coverFile = await urlToFile(cover, "cover.jpg");
       formData.append("photos", coverFile);
       for (let i = 0; i < photos.length; i++) {
@@ -306,7 +312,6 @@ const EventForm = ({
             cover={cover}
             setPhotos={setPhotos}
             error={error}
-            formRef={formRef}
           />
         )}
         {slide === 1 && (
@@ -615,7 +620,6 @@ const OperationalForm = ({
   const handleSelectDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target: HTMLInputElement = e.target as HTMLInputElement;
     const date = new Date(target.value);
-    console.log(date.toISOString().split("T")[0]);
     setSelectedDate(date);
   };
 

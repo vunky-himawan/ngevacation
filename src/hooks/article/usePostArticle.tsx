@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 type ArticlePayload = {
   title: string;
@@ -10,7 +10,9 @@ type ArticlePayload = {
 };
 
 export const usePostArticle = () => {
-  const token: string | null = localStorage.getItem("token") || null;
+  const axiosInstance = RefreshToken();
+
+  const token: string | null = localStorage.getItem("X-Access-Token") || null;
   const postArticle = async (
     onSuccess: () => void,
     onError: () => void,
@@ -21,7 +23,7 @@ export const usePostArticle = () => {
         throw new Error("Please login to post article");
       }
 
-      await axios.post(`${API_BASE_URL}/article`, payload, {
+      await axiosInstance.post(`${API_BASE_URL}/article`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

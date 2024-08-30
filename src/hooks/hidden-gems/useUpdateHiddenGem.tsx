@@ -1,8 +1,9 @@
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 export const useUpdateHiddenGem = () => {
+  const axiosInstance = RefreshToken();
   const { token } = useAuth();
 
   const updateHiddenGem = async (
@@ -16,14 +17,16 @@ export const useUpdateHiddenGem = () => {
         throw new Error("Not logged in");
       }
 
-      console.log(data);
-
-      await axios.patch(`${API_BASE_URL}/hidden-gems/${hiddenGemId}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axiosInstance.patch(
+        `${API_BASE_URL}/hidden-gems/${hiddenGemId}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       onSuccess();
     } catch (error) {

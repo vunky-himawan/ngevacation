@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 type ApproveProps = {
   onSuccess: () => void;
@@ -9,6 +9,8 @@ type ApproveProps = {
 };
 
 export const useApprove = () => {
+  const axiosInstance = RefreshToken();
+
   const approve = async ({
     onSuccess,
     onError,
@@ -16,7 +18,7 @@ export const useApprove = () => {
     hiddenGemId,
   }: ApproveProps) => {
     try {
-      await axios.patch(
+      await axiosInstance.patch(
         `${API_BASE_URL}/hidden-gems/${hiddenGemId}/approve`,
         null,
         {

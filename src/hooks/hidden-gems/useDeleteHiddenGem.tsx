@@ -1,9 +1,10 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 import { useNavigate } from "react-router-dom";
 
 export const useDeleteHiddenGem = () => {
   const navigate = useNavigate();
+  const axiosInstance = RefreshToken();
 
   const deleteHiddenGem = async ({
     onSuccess,
@@ -22,7 +23,7 @@ export const useDeleteHiddenGem = () => {
     }
 
     try {
-      await axios.delete(`${API_BASE_URL}/hidden-gems/${hiddenGemId}`, {
+      await axiosInstance.delete(`${API_BASE_URL}/hidden-gems/${hiddenGemId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

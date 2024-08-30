@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 type ApproveProps = {
   onSuccess: () => void;
@@ -9,6 +9,8 @@ type ApproveProps = {
 };
 
 export const useApprove = () => {
+  const axiosInstance = RefreshToken();
+
   const approve = async ({
     onSuccess,
     onError,
@@ -16,11 +18,15 @@ export const useApprove = () => {
     eventId,
   }: ApproveProps) => {
     try {
-      await axios.patch(`${API_BASE_URL}/event/${eventId}/approve`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.patch(
+        `${API_BASE_URL}/event/${eventId}/approve`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       onSuccess();
     } catch (error) {

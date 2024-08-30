@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 type RejectProps = {
   onSuccess: () => void;
@@ -10,6 +10,8 @@ type RejectProps = {
 };
 
 export const useReject = () => {
+  const axiosInstance = RefreshToken();
+
   const reject = async ({
     onSuccess,
     onError,
@@ -17,11 +19,10 @@ export const useReject = () => {
     message,
     eventId,
   }: RejectProps) => {
-    console.log(token);
     message = message.trim();
 
     try {
-      await axios.patch(
+      await axiosInstance.patch(
         `${API_BASE_URL}/event/${eventId}/reject`,
         {
           message: message,

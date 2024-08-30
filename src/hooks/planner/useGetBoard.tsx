@@ -1,24 +1,38 @@
 import { API_BASE_URL } from "@/data/Api";
 import { Board } from "@/types/Planner/PlannerBoard";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const useGetBoard = () => {
+  const axiosInstance = RefreshToken();
+  const navigate = useNavigate();
+
   const getBoard = async (
     onSuccess: (data: Board) => void,
-    onError: () => void,
+    onError: (message: string) => void,
     token: string,
     planId: string
   ) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/board/${planId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get(
+        `${API_BASE_URL}/board/${planId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       onSuccess(response.data.data);
     } catch (error) {
-      onError();
+      if (error instanceof AxiosError) {
+        if (error.response?.data.statusCode === 403) {
+          navigate("/traveler/plans");
+        } else {
+          onError(error.response?.data.message);
+        }
+      }
     }
   };
 

@@ -74,7 +74,7 @@ const CardOfHiddenGems = ({
             </div>
             <p className="text-sm">Uploaded by {uploader}</p>
             <div className="flex gap-1 items-center">
-              {ratingStars.map((star, index) => (
+              {ratingStars.map((_, index) => (
                 <div
                   key={index}
                   className="icon-[iconamoon--star-fill] w-5 h-5 bg-yellow-500"

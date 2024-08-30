@@ -1,9 +1,10 @@
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 export const usePostEvent = () => {
   const { token } = useAuth();
+  const axiosInstance = RefreshToken();
 
   const postEvent = async (
     onSuccess: () => void,
@@ -15,14 +16,12 @@ export const usePostEvent = () => {
         throw new Error("Not logged in");
       }
 
-      const reponse = await axios.post(`${API_BASE_URL}/event`, data, {
+      await axiosInstance.post(`${API_BASE_URL}/event`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-
-      console.log(reponse);
 
       onSuccess();
     } catch (error) {

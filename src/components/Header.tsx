@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { User } from "@/types/User";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const Header = ({
   withSearch = false,
@@ -18,7 +19,7 @@ const Header = ({
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { token, user, logout } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
@@ -54,7 +55,6 @@ const Header = ({
             <Link to="/events">Events</Link>
             <Link to="/hidden-gems">Hidden Gems</Link>
             <Link to="/articles">Articles</Link>
-            <Link to="/">Community</Link>
           </nav>
 
           {/* Search Bar, Login/Logout Buttons, and Hamburger Menu Button */}
@@ -165,12 +165,6 @@ const Menu = () => {
               Articles
             </span>
           </Link>
-          <Link to="/">
-            <span className="flex items-center gap-5">
-              <span className="icon-[iconamoon--cheque-thin] w-6 h-6"></span>
-              Community
-            </span>
-          </Link>
         </div>
       </nav>
     </>
@@ -191,7 +185,11 @@ const AuthMenu = ({
   return (
     <>
       <button onClick={() => setIsOpenModal(!isOpenModal)} className="relative">
-        <img src={user.profile} alt="" className="h-12 w-12 rounded-full" />
+        <Avatar className="w-12 h-12">
+          <AvatarImage src={user.profile} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        {/* <img src={user.profile} alt="" className="h-12 w-12 rounded-full" /> */}
         <div
           className={`absolute top-20 right-0 bg-white rounded-md p-5 w-[14rem] flex flex-col gap-5 text-left before:content-[''] before:absolute before:w-7 before:h-7 before:rotate-45 before:right-3 before:-top-2 before:bg-white before:rounded-md ${
             isOpenModal ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"

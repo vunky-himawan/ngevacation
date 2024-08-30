@@ -1,6 +1,6 @@
 import { User } from "../User";
 import { EventCategory } from "./EventCategory";
-import { OperationDay } from "./EventOperationalDay";
+import { EventOperationalDay } from "./EventOperationalDay";
 
 export type Event = {
   event_id: string;
@@ -14,7 +14,7 @@ export type Event = {
   description: string;
   photos: string[];
   user: User;
-  operation_days: OperationDay[];
+  operation_days: EventOperationalDay[];
   created_at: Date;
   updated_at: Date;
 };

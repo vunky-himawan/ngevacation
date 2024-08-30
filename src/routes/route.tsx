@@ -39,6 +39,7 @@ import EventUpdate from "@/pages/traveler/event/UpdateEvent";
 import TravelerHiddenGems from "@/pages/traveler/hiddenGem/HiddenGems";
 import HiddenGemUpdate from "@/pages/traveler/hiddenGem/UpdateHiddenGems";
 import EventDetail from "@/pages/admin/event/EventDetail";
+import { PlannerJoin } from "@/pages/traveler/planner/PlannerJoin";
 
 const Router = () => {
   const ArticlePath = [
@@ -120,6 +121,10 @@ const Router = () => {
         {
           path: "/planner/post",
           element: <PlannerPost />,
+        },
+        {
+          path: "/planner/board/:boardId/join/:hash",
+          element: <PlannerJoin />,
         },
       ],
     },

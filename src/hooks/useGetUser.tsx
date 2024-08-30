@@ -1,8 +1,10 @@
 import { API_BASE_URL } from "@/data/Api";
 import { User } from "@/types/User";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 export const useGetUser = () => {
+  const axiosInstance = RefreshToken();
+
   const getUser = async (
     onSuccess: (data: User) => void,
     onError: () => void,
@@ -13,7 +15,7 @@ export const useGetUser = () => {
         throw new Error("No token found");
       }
 
-      const response = await axios.get(`${API_BASE_URL}/user`, {
+      const response = await axiosInstance.get(`${API_BASE_URL}/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

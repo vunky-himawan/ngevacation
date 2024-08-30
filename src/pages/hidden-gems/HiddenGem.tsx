@@ -90,7 +90,6 @@ const HiddenGem = () => {
         setData(data);
         setIsLoading(false);
         SEO.title = data.title;
-        console.log(data);
       },
       () => {
         console.log("error");

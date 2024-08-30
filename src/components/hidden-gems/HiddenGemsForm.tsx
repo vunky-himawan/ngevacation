@@ -149,8 +149,10 @@ const HiddenGemsForm = ({
   }
 
   const buildFormData = async (): Promise<FormData> => {
-    const formData = new FormData(formRef.current);
-    if (formData.get("photos")?.name === "" && cover !== "") {
+    const formData = new FormData(formRef.current!);
+    const photoForm = formData.get("photos");
+
+    if (photoForm instanceof File && photoForm.name === "" && cover !== "") {
       const coverFile = await urlToFile(cover, "cover.jpg");
       formData.append("photos", coverFile);
       for (let i = 0; i < photos.length; i++) {
@@ -646,7 +648,7 @@ const OperationalForm = ({
   const validation = useValidationHiddenGems();
 
   useEffect(() => {
-    operationalDays.forEach((operationalDay: OperationalDay, index: number) => {
+    operationalDays.forEach((operationalDay: OperationalDay) => {
       setDays((prev) =>
         prev.filter((day) => day.name !== operationalDay.day.name)
       );

@@ -11,9 +11,7 @@ type Props = {
 export const useGetFile = () => {
   const getFile = async ({ onSuccess, onError, folder, filename }: Props) => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/storage/public/${folder}/${filename}`
-      );
+      await axios.get(`${API_BASE_URL}/storage/public/${folder}/${filename}`);
       onSuccess();
     } catch (error) {
       onError();

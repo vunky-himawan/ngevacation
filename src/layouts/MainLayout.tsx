@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { SEOModel } from "@/models/SEO";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -74,6 +75,7 @@ const MainLayout = ({
           )}
           {children}
         </main>
+        <Footer />
       </HelmetProvider>
     </>
   );

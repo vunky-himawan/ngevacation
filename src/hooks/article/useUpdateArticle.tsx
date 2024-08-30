@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 type ArticlePayload = {
   title: string;
@@ -12,6 +12,7 @@ type ArticlePayload = {
 
 export const useUpdateArticle = () => {
   const { token } = useAuth();
+  const axiosInstance = RefreshToken();
 
   const updateArticle = async (
     onSuccess: () => void,
@@ -24,12 +25,16 @@ export const useUpdateArticle = () => {
         throw new Error("Not logged in");
       }
 
-      await axios.patch(`${API_BASE_URL}/article/${articleId}`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axiosInstance.patch(
+        `${API_BASE_URL}/article/${articleId}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       onSuccess();
     } catch (error) {

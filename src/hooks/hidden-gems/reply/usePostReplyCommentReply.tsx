@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 
 type ReplyCommentReplyRequest = {
   comment: string;
@@ -10,13 +10,15 @@ type ReplyCommentReplyRequest = {
 };
 
 export const usePostReplyCommentReply = () => {
+  const axiosInstance = RefreshToken();
+
   const postReplyCommentReply = async (
     onSuccess: () => void,
     onError: () => void,
     data: ReplyCommentReplyRequest
   ) => {
     try {
-      await axios.patch(
+      await axiosInstance.patch(
         `${API_BASE_URL}/hidden-gems/${data.hidden_gems_id}/comment/${data.comment_id}/reply/${data.parent_id}`,
         {
           comment: data.comment,

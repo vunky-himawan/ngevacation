@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
+import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 
 type CommentRequest = {
@@ -8,13 +9,20 @@ type CommentRequest = {
   token: string;
 };
 
-export const useCommmentArticle = () => {
+type PostCommentParams = {
+  onSuccess: () => void;
+  onError: (message: string) => void;
+  data: CommentRequest;
+};
+
+export const useCommentArticle = () => {
+  const axiosInstance = RefreshToken();
   const navigate = useNavigate();
-  const postComment = async (
-    onSuccess: () => void,
-    onError: () => void,
-    data: CommentRequest
-  ) => {
+  const postComment = async ({
+    onSuccess,
+    onError,
+    data,
+  }: PostCommentParams) => {
     try {
       if (!data.token) {
         navigate("/auth/login");
@@ -26,7 +34,7 @@ export const useCommmentArticle = () => {
         return;
       }
 
-      await axios.patch(
+      await axiosInstance.patch(
         `${API_BASE_URL}/article/${data.articleId}/comment`,
         { comment: data.comment },
         {
@@ -38,7 +46,9 @@ export const useCommmentArticle = () => {
 
       onSuccess();
     } catch (error) {
-      onError();
+      if (error instanceof AxiosError) {
+        onError(error.response?.data.message);
+      }
     }
   };
 

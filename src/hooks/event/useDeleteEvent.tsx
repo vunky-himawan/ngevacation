@@ -1,9 +1,10 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 import { useNavigate } from "react-router-dom";
 
 export const useDeleteEvent = () => {
   const navigate = useNavigate();
+  const axiosInstance = RefreshToken();
 
   const deleteEvent = async ({
     onSuccess,
@@ -22,7 +23,7 @@ export const useDeleteEvent = () => {
     }
 
     try {
-      await axios.delete(`${API_BASE_URL}/event/${eventId}`, {
+      await axiosInstance.delete(`${API_BASE_URL}/event/${eventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

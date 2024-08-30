@@ -16,7 +16,6 @@ const EventRequest = () => {
   useEffect(() => {
     getEvent(
       (data: Event[]) => {
-        console.log(data);
         setEvent(data);
         setIsLoading(false);
       },

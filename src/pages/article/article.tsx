@@ -18,8 +18,9 @@ import { ReplyComment } from "@/types/ReplyComment";
 import { decode } from "@/utils/decode";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useCommmentArticle } from "@/hooks/article/comment/useComment";
+import { useCommentArticle } from "@/hooks/article/comment/useComment";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast as sooner } from "sonner";
 
 interface ArticleDetail extends Article {
   count_views: number;
@@ -192,24 +193,29 @@ const ArticleComment = ({
 }) => {
   const { token } = useAuth();
   const [message, setMessage] = useState<string>("");
-  const sendComment = useCommmentArticle();
+  const sendComment = useCommentArticle();
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendComment(
-      () => {
+    sendComment({
+      onSuccess: () => {
+        sooner("Comment Successfully sent!", {
+          duration: 1000,
+        });
         setOnSendComment(true);
         setMessage("");
       },
-      () => {
-        console.log("error");
+      onError: (message: string) => {
+        sooner(message, {
+          duration: 1000,
+        });
       },
-      {
+      data: {
         articleId,
         comment: message,
         token: token as string,
-      }
-    );
+      },
+    });
   };
 
   return (
@@ -310,22 +316,29 @@ const CommentCard = ({
   const [isLiked, setIsLiked] = useState<boolean>(comment.marked_like);
   const [countLike, setCountLike] = useState<number>(comment.count_like);
 
-  const handleCommentLike = useCommentLike(
-    articleId,
-    comment.comment_id,
-    token as string
-  );
+  const handleCommentLike = useCommentLike();
 
-  const sendReplyComment = useReplyCommentReply({
-    articleId,
-    comment: message,
-    token: token as string,
-    commentId: comment.comment_id,
-  });
+  const sendReplyComment = useReplyCommentReply();
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendReplyComment();
+    sendReplyComment({
+      onSuccess: () => {
+        sooner("Comment Successfully sent!", {
+          duration: 1000,
+        });
+      },
+      onError: (message: string) => {
+        sooner(message, {
+          duration: 1000,
+        });
+      },
+      data: {
+        articleId,
+        comment: message,
+        commentId: comment.comment_id,
+      },
+    });
     setMessage("");
     setIsOpenReply(false);
   };
@@ -333,7 +346,22 @@ const CommentCard = ({
   const handleLike = () => {
     setIsLiked(!isLiked);
     setCountLike(isLiked ? countLike - 1 : countLike + 1);
-    handleCommentLike();
+    handleCommentLike({
+      onSuccess: () => {
+        sooner("Comment Successfully liked!", {
+          duration: 1000,
+        });
+      },
+      onError: (message: string) => {
+        sooner(message, {
+          duration: 1000,
+        });
+      },
+      data: {
+        articleId,
+        commentId: comment.comment_id,
+      },
+    });
   };
 
   return (
@@ -412,7 +440,6 @@ const CommentCard = ({
 const ReplyCard = ({
   comment,
   articleId,
-  token,
   parentId,
   commentId,
 }: {
@@ -427,24 +454,30 @@ const ReplyCard = ({
   const [isLiked, setIsLiked] = useState<boolean>(comment.marked_like);
   const [countLike, setCountLike] = useState<number>(comment.count_like);
 
-  const handleReplyLike = useReplyCommentLike(
-    articleId,
-    parentId,
-    token as string,
-    comment.reply_id
-  );
+  const handleReplyLike = useReplyCommentLike();
 
-  const sendReplyComment = useReplyCommentReplyTheReply({
-    articleId,
-    comment: message,
-    token: token as string,
-    commentId: commentId,
-    parentId: parentId,
-  });
+  const sendReplyComment = useReplyCommentReplyTheReply();
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendReplyComment();
+    sendReplyComment({
+      onSuccess: () => {
+        sooner("Comment Successfully sent!", {
+          duration: 1000,
+        });
+      },
+      onError: (message: string) => {
+        sooner(message, {
+          duration: 1000,
+        });
+      },
+      data: {
+        articleId,
+        comment: message,
+        commentId: commentId,
+        parentId: parentId,
+      },
+    });
     setMessage("");
     setIsOpenReply(false);
   };
@@ -452,7 +485,23 @@ const ReplyCard = ({
   const handleLike = () => {
     setIsLiked(!isLiked);
     setCountLike(isLiked ? countLike - 1 : countLike + 1);
-    handleReplyLike();
+    handleReplyLike({
+      onSuccess: () => {
+        sooner("Comment Successfully liked!", {
+          duration: 1000,
+        });
+      },
+      onError: (message: string) => {
+        sooner(message, {
+          duration: 1000,
+        });
+      },
+      data: {
+        articleId,
+        parentId,
+        replyId: comment.reply_id,
+      },
+    });
   };
 
   return (

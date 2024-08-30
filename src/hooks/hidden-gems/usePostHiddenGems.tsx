@@ -1,9 +1,11 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 import { useNavigate } from "react-router-dom";
 
 export const usePostHiddenGems = () => {
-  const token = localStorage.getItem("token");
+  const axiosInstance = RefreshToken();
+
+  const token = localStorage.getItem("X-Access-Token");
   const navigate = useNavigate();
 
   if (!token) {
@@ -16,7 +18,7 @@ export const usePostHiddenGems = () => {
     data: FormData
   ) => {
     try {
-      await axios.post(`${API_BASE_URL}/hidden-gems`, data, {
+      await axiosInstance.post(`${API_BASE_URL}/hidden-gems`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

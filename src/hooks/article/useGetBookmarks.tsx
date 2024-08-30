@@ -1,10 +1,12 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios, { AxiosResponse } from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
+import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const useGetBookmarks = () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("X-Access-Token");
   const navigate = useNavigate();
+  const axiosInstance = RefreshToken();
 
   const getBookmarks = async ({
     onSuccess,
@@ -19,7 +21,7 @@ export const useGetBookmarks = () => {
     }
 
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${API_BASE_URL}/article/bookmark/list`,
         {
           headers: {

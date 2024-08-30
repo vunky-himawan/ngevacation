@@ -28,7 +28,7 @@ interface JwtPayloadAuth extends JwtPayload {
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token") || null
+    localStorage.getItem("X-Access-Token") || null
   );
   const [role, setRole] = useState<string>("");
   const getUser = useGetUser();
@@ -51,10 +51,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       );
 
       const accessToken = response.data.data.access_token.token;
+      const accessTokenExpiresIn = response.data.data.access_token.expires_in;
+      const refreshToken = response.data.data.refresh_token.token;
+      const refreshTokenExpiresIn = response.data.data.refresh_token.expires_in;
 
       if (response.data.data) {
         setToken(accessToken);
-        localStorage.setItem("token", accessToken);
+        localStorage.setItem("X-Access-Token", accessToken);
+        localStorage.setItem(
+          "X-Access-Token-Expires-In",
+          new Date(accessTokenExpiresIn).getTime().toString() // Calculate the eFxpiration time
+        );
+        localStorage.setItem("X-Refresh-Token", refreshToken);
+        localStorage.setItem(
+          "X-Refresh-Token-Expires-In",
+          new Date(refreshTokenExpiresIn).getTime().toString() // Calculate the expiration time
+        );
       }
     } catch (error) {
       console.log(error);
@@ -71,7 +83,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(null);
       setRole("");
       setUser(null);
-      localStorage.removeItem("token");
+      localStorage.removeItem("X-Access-Token");
+      localStorage.removeItem("X-Access-Token-Expires-In");
+      localStorage.removeItem("X-Refresh-Token");
+      localStorage.removeItem("X-Refresh-Token-Expires-In");
     } catch (error) {
       console.log(error);
     }

@@ -1,10 +1,11 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 import { useNavigate } from "react-router-dom";
 
 export const useDeleteArticle = (articleId: string) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("X-Access-Token");
+  const axiosInstance = RefreshToken();
 
   const deleteArticle = async ({
     onSuccess,
@@ -19,7 +20,7 @@ export const useDeleteArticle = (articleId: string) => {
     }
 
     try {
-      await axios.delete(`${API_BASE_URL}/article/${articleId}`, {
+      await axiosInstance.delete(`${API_BASE_URL}/article/${articleId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,10 +1,11 @@
 import { API_BASE_URL } from "@/data/Api";
-import axios from "axios";
+import { RefreshToken } from "@/utils/RefreshToken";
 import { useNavigate } from "react-router-dom";
 
 export const useArticleBookmark = (articleId: string) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("X-Access-Token");
   const navigate = useNavigate();
+  const axiosInstance = RefreshToken();
 
   const bookmarkArticle = async () => {
     if (!token) {
@@ -13,11 +14,15 @@ export const useArticleBookmark = (articleId: string) => {
     }
 
     try {
-      await axios.patch(`${API_BASE_URL}/article/${articleId}/bookmark`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.patch(
+        `${API_BASE_URL}/article/${articleId}/bookmark`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.error("Failed to bookmark article:", error);
     }
