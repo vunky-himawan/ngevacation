@@ -35,7 +35,7 @@ const AdminLayout = ({
           <link rel="canonical" href={`${siteUrl}${pathLocation.pathname}`} />
 
           {/* favicon */}
-          <link rel="icon" type="image/png" href="/favicon.png" />
+          <link rel="icon" type="image/png" href="/favicon.svg" />
         </Helmet>
         <main className="w-screen relative">
           <Header setIsMenuOpen={setIsMenuOpen} isMenuOpen={isMenuOpen} />

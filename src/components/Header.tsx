@@ -49,7 +49,9 @@ const Header = ({
       <div className="w-full bg-white/2 flex justify-between items-center lg:px-20 md:p-5 fixed top-0 z-50 left-0 right-0 text-white">
         <header className="w-full max-w-7xl mx-auto top-0 left-0 flex justify-between items-center py-5 px-7 bg-white text-orange-500 md:rounded-3xl relative">
           <div>
-            <Link to={`/`}>Logo</Link>
+            <Link to={`/`}>
+              <img src="/images/logo.svg" alt="" className="w-14 h-1w-14" />
+            </Link>
           </div>
           <nav className="flex gap-14 max-lg:hidden">
             <Link to="/events">Events</Link>

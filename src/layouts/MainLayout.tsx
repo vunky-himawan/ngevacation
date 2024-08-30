@@ -44,7 +44,7 @@ const MainLayout = ({
           <meta name="keywords" content={SEO.keywords.join(",")} />
 
           {/* favicon */}
-          <link rel="icon" type="image/png" href="/favicon.png" />
+          <link rel="icon" type="image/png" href="/favicon.svg" />
 
           {/* <!-- Open Graph / Facebook --> */}
           <meta property="og:type" content={SEO.type} />
