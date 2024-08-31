@@ -1,7 +1,7 @@
 import { Toaster } from "./components/ui/toaster";
 import { Toaster as Sooner } from "./components/ui/sonner";
-import AuthProvider from "./context/AuthContext";
 import Router from "./routes/Route";
+import AuthProvider from "./context/AuthContext";
 
 const App = () => {
   return (
